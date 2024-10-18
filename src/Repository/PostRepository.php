@@ -16,16 +16,36 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    public function findAllPosts():array
+    public function findAllPosts(): array
     {
-       return  $this->findAll();
+        return $this->findAll();
     }
 
-    public function save(Post $post):void
-    {   
+    public function save(Post $post): void
+    {
         $entityManager = $this->getEntityManager();
 
         $entityManager->persist($post);
         $entityManager->flush();
     }
+
+    public function findPostById(int $id): ?Post
+    {
+        return $this->find($id);
+    }
+
+    public function update(Post $post): void
+    {
+        $this->getEntityManager()->flush($post);
+    }
+
+    public function delete(Post $post): void
+    {
+        $this->getEntityManager()->remove($post);
+        $this->getEntityManager()->flush();
+    }
+
 }
+
+
+
