@@ -5,16 +5,21 @@ namespace App\Controller;
 use App\Normalizers\PostNormalizer;
 use App\Repository\PostRepository;
 use App\Service\PostService;
+use App\Traits\ValidationErrorFormatterTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 class PostController extends AbstractController
 {
     private PostService $postService;
     private PostNormalizer $normalizer;
+
+    use ValidationErrorFormatterTrait;
+
 
     public function __construct(PostService $postService, PostNormalizer $normalizer)
     {
@@ -53,18 +58,32 @@ class PostController extends AbstractController
     public function createPost(Request $request): JsonResponse
     {   
         $data = json_decode($request->getContent(), true);
+        try {
+            $post = $this->postService->createPost($data['title'], $data['content']);
+            return new JsonResponse([
+                'status'=>'success',
+                'message'=>'Post created successfully',
+                'post'=>[
+                    'id'=>$post->getId(),
+                    'title'=>$post->getTitle(),
+                    'content'=>$post->getContent(),
+                    'created'=>$post->getCreatedAt()->format('Y-m-d H:i:s')
+                ]
+            ], Response::HTTP_CREATED);
 
-        $post = $this->postService->createPost($data['title'], $data['content']);
+        } catch (ValidationFailedException $e){
+            $errors = $this->formatValidationErrors($e->getViolations());
+            return new JsonResponse([
+                'status'=>'error',
+                'errors'=>$errors,
+            ], Response::HTTP_BAD_REQUEST);
 
-        return new JsonResponse([
-            'status'=>'success',
-            'message'=>'Post created successfully',
-            'post'=>[
-                'id'=>$post->getId(),
-                'title'=>$post->getTitle(),
-                'content'=>$post->getContent(),
-            ]
-        ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'error'=>$e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     #[Route('/post/update/{id}', name: 'app_post_update', methods: ['PUT'])]
@@ -94,6 +113,7 @@ class PostController extends AbstractController
            'id'=>$id,
        ]);
     }
-
-
 }
+
+
+

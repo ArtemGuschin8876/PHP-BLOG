@@ -6,15 +6,19 @@ use App\Entity\Post;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 class PostService
 {
     private PostRepository $postRepository;
+    private ValidatorInterface $validator;
 
-    public function __construct(PostRepository $postRepository)
+    public function __construct(PostRepository $postRepository, ValidatorInterface $validator)
     {
         $this->postRepository = $postRepository;
+        $this->validator = $validator;
     }
 
     public function getAllPosts():array
@@ -29,8 +33,12 @@ class PostService
        $post->setTitle($title);
        $post->setContent($content);
 
-       $this->postRepository->save($post);
+       $errors = $this->validator->validate($post);
+       if (count($errors) > 0) {
+           throw new ValidationFailedException($post,$errors);
+       }
 
+       $this->postRepository->save($post);
        return $post;
     }
 
