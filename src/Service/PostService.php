@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\DTO\CreatePostDTO;
+use App\DTO\UpdatePostDTO;
 use App\Entity\Post;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityNotFoundException;
@@ -27,19 +29,27 @@ class PostService
     }
 
 
-    public function createPost($title, $content): Post
+    public function createPost(CreatePostDTO $createPostDTO): array
     {
-       $post = new Post;
-       $post->setTitle($title);
-       $post->setContent($content);
-
-       $errors = $this->validator->validate($post);
+       $errors = $this->validator->validate($createPostDTO);
        if (count($errors) > 0) {
-           throw new ValidationFailedException($post,$errors);
+           $errorMessages[] = [];
+           foreach ($errors as $error) {
+               $errorMessages[] = [
+                   'message' => $error->getMessage(),
+                   'property'=> $error->getPropertyPath(),
+               ];
+           }
+           return ['status' => 'error', 'errors' => $errorMessages];
        }
 
+       $post = new Post();
+       $post->setTitle($createPostDTO->getTitle());
+       $post->setContent($createPostDTO->getContent());
+
        $this->postRepository->save($post);
-       return $post;
+
+       return ['status' => 'success', 'post' => $createPostDTO->toArray()];
     }
 
     public function deletePost(int $id):void
@@ -53,20 +63,34 @@ class PostService
         $this->postRepository->delete($post, true);
     }
 
-    public function updatePostByID(int $id, array $data):void
+    public function updatePostByID(int $id, UpdatePostDTO $updatePostDTO):array
     {
         $post = $this->postRepository->findPostById($id);
         if (!$post) {
             throw new \Exception("Post not found");
         }
 
-        if (isset($data['title'])) {
-            $post->setTitle($data['title']);
+        $errors = $this->validator->validate($updatePostDTO);
+        if (count($errors) > 0) {
+            $errorMessages[] = [];
+            foreach ($errors as $error) {
+                $errorMessages[] = [
+                    'message' => $error->getMessage(),
+                    'property'=> $error->getPropertyPath(),
+                ];
+            }
+            return ['status' => 'error', 'errors' => $errorMessages];
         }
-        if (isset($data['content'])) {
-            $post->setContent($data['content']);
+
+        if ($updatePostDTO->getTitle()) {
+            $post->setTitle($updatePostDTO->getTitle());
         }
+        if ($updatePostDTO->getContent()) {
+            $post->setContent($updatePostDTO->getContent());
+        }
+
         $this->postRepository->update($post);
+        return ['status' => 'success', 'post' => $updatePostDTO->toArray()];
     }
 
 

@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
+use App\DTO\CreatePostDTO;
+use App\DTO\UpdatePostDTO;
 use App\Normalizers\PostNormalizer;
 use App\Repository\PostRepository;
 use App\Service\PostService;
-use App\Traits\ValidationErrorFormatterTrait;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +19,6 @@ class PostController extends AbstractController
     private PostService $postService;
     private PostNormalizer $normalizer;
 
-    use ValidationErrorFormatterTrait;
 
 
     public function __construct(PostService $postService, PostNormalizer $normalizer)
@@ -58,31 +58,11 @@ class PostController extends AbstractController
     public function createPost(Request $request): JsonResponse
     {   
         $data = json_decode($request->getContent(), true);
-        try {
-            $post = $this->postService->createPost($data['title'], $data['content']);
-            return new JsonResponse([
-                'status'=>'success',
-                'message'=>'Post created successfully',
-                'post'=>[
-                    'id'=>$post->getId(),
-                    'title'=>$post->getTitle(),
-                    'content'=>$post->getContent(),
-                    'created'=>$post->getCreatedAt()->format('Y-m-d H:i:s')
-                ]
-            ], Response::HTTP_CREATED);
+        $CreatePostDTO = new CreatePostDTO($data);
 
-        } catch (ValidationFailedException $e){
-            $errors = $this->formatValidationErrors($e->getViolations());
-            return new JsonResponse([
-                'status'=>'error',
-                'errors'=>$errors,
-            ], Response::HTTP_BAD_REQUEST);
+        $result = $this->postService->createPost($CreatePostDTO);
 
-        } catch (\Exception $e) {
-            return new JsonResponse([
-                'error'=>$e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        return new JsonResponse($result);
 
     }
 
@@ -90,13 +70,10 @@ class PostController extends AbstractController
     public function updatePostByID(Request $request, int $id): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+        $UpdatePostDTO = new UpdatePostDTO($data);
 
-        try {
-            $this->postService->updatePostByID($id, $data);
-            return new JsonResponse(['message'=>'Post updated successfully'], Response::HTTP_OK);
-        }catch (\Exception $exception){
-            return new JsonResponse(['error'=>$exception->getMessage()], Response::HTTP_NOT_FOUND);
-        }
+        $result = $this->postService->updatePostById($id, $UpdatePostDTO);
+        return new JsonResponse($result);
     }
 
     #[Route('/post/delete/{id}', name: 'app_post_delete', methods:['DELETE'])]

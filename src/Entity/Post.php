@@ -15,21 +15,11 @@ class Post
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 5,
-        max: 20,
-        minMessage: 'Your title must be at least {{ limit }} characters long',
-        maxMessage: 'Your title must be at least {{ limit }} characters long',
-    )]
+
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 5,
-        minMessage: 'Your content must be at least {{ limit }} characters long',
-    )]
+    #[ORM\Column(type: 'text')]
+
     private ?string $content = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
