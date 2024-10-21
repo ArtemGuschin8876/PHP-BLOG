@@ -32,11 +32,6 @@ class PostRepository extends ServiceEntityRepository
         return $this->find($id);
     }
 
-    public function update(Post $post): void
-    {
-        $this->save($post);
-    }
-
     public function delete(Post $post): void
     {
         $this->getEntityManager()->remove($post);

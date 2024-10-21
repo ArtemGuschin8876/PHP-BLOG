@@ -83,7 +83,7 @@ class PostService
             $post->setContent($updatePostDTO->getContent());
         }
 
-        $this->postRepository->update($post);
+        $this->postRepository->save($post);
         return ['status' => 'success', 'post' => $updatePostDTO->toArray()];
     }
 
