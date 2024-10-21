@@ -23,10 +23,8 @@ class PostRepository extends ServiceEntityRepository
 
     public function save(Post $post): void
     {
-        $entityManager = $this->getEntityManager();
-
-        $entityManager->persist($post);
-        $entityManager->flush();
+        $this->getEntityManager()->persist($post);
+        $this->getEntityManager()->flush();
     }
 
     public function findPostById(int $id): ?Post
@@ -36,7 +34,7 @@ class PostRepository extends ServiceEntityRepository
 
     public function update(Post $post): void
     {
-        $this->getEntityManager()->flush($post);
+        $this->save($post);
     }
 
     public function delete(Post $post): void
