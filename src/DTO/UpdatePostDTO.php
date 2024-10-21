@@ -1,6 +1,7 @@
 <?php
 
 namespace App\DTO;
+
 use Symfony\Component\Validator\Constraints as Assert;
 
 class UpdatePostDTO
@@ -30,6 +31,7 @@ class UpdatePostDTO
     {
         return $this->title;
     }
+
     public function getContent(): string
     {
         return $this->content;
