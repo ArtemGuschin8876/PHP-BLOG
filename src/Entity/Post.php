@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 use DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
@@ -15,20 +15,14 @@ class Post
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
-
-    #[ORM\Column(length: 255)]
-    private ?string $title = null;
-
-    #[ORM\Column(type: 'text')]
-    private ?string $content = null;
-
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    public function __construct()
-    {
-        $this->createdAt = new DateTimeImmutable();
-    }
+    public function __construct(
+        #[ORM\Column(length: 255)]
+        private ?string             $title = null,
+        #[ORM\Column(type: 'text')]
+        private ?string             $content = null,
+        #[ORM\Column(type: 'datetime_immutable')]
+        private ?\DateTimeImmutable $createdAt = null,
+    ){}
 
     public function getId(): ?int
     {

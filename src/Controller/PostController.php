@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Post;
-use App\DTO\CreatePostDTO;
-use App\DTO\UpdatePostDTO;
+use App\Request\CreatePostDTO;
+use App\Request\UpdatePostDTO;
 use App\Normalizers\PostNormalizer;
 use App\Service\PostService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,7 +37,7 @@ class PostController extends AbstractController
                 null,
                 ['mode' => 'default']);
         }, $posts);
-        return $this->json(['posts' => $normalizedPosts], Response::HTTP_OK);
+        return $this->json(['data' => $normalizedPosts], Response::HTTP_OK);
     }
 
     #[Route('/post/{id}', name: 'post_show', methods: ['GET'])]
@@ -46,27 +47,25 @@ class PostController extends AbstractController
             $post,
             null,
             ['mode' => 'default']);
-        return $this->json($normalizedPost, Response::HTTP_OK);
+        return $this->json(['data' =>$normalizedPost], Response::HTTP_OK);
     }
 
     #[Route('/create', name: 'post_create', methods: ['POST'])]
     public function createPost(Request $request): JsonResponse
     {
-        $data = $request->toArray();
-        $createPostDTO = new CreatePostDTO($data);
+        $createPostDTO = new CreatePostDTO($request->toArray());
 
         $result = $this->postService->createPost($createPostDTO);
-        return new JsonResponse($result);
+        return $this->json(['data' => $result], Response::HTTP_CREATED);
     }
 
     #[Route('/post/update/{id}', name: 'post_update', methods: ['PUT'])]
     public function updatePostByID(Request $request, int $id): JsonResponse
     {
-        $data = $request->toArray();
-        $updatePostDTO = new UpdatePostDTO($data);
+        $updatePostDTO = new UpdatePostDTO($request->toArray());
 
         $result = $this->postService->updatePostById($id, $updatePostDTO);
-        return new JsonResponse($result);
+        return $this->json(['data' => $result], Response::HTTP_OK);
     }
 
     #[Route('/post/delete/{id}', name: 'post_delete', methods: ['DELETE'])]

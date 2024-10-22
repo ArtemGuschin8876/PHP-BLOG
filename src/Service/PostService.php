@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
 namespace App\Service;
 
-use App\DTO\CreatePostDTO;
-use App\DTO\UpdatePostDTO;
+use App\Request\CreatePostDTO;
+use App\Request\UpdatePostDTO;
 use App\Entity\Post;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityNotFoundException;
