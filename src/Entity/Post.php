@@ -24,9 +24,7 @@ class Post
         private ?string             $content = null,
         #[ORM\Column(type: 'datetime_immutable')]
         private ?DateTimeImmutable $createdAt = new DateTimeImmutable(),
-    )
-    {
-    }
+    ) {}
 
     public function getId(): ?int
     {

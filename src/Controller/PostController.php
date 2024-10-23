@@ -19,15 +19,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PostController extends AbstractController
 {
-    private PostService $postService;
-    private PostNormalizer $normalizer;
-    private ValidatorInterface $validator;
 
-    public function __construct(PostService $postService, PostNormalizer $normalizer, ValidatorInterface $validator)
+    public function __construct(
+        private PostService        $postService,
+        private PostNormalizer     $normalizer,
+        private ValidatorInterface $validator
+    )
     {
-        $this->validator = $validator;
-        $this->normalizer = $normalizer;
-        $this->postService = $postService;
     }
 
     #[Route('/posts', name: 'posts', methods: ['GET'])]
@@ -71,6 +69,7 @@ class PostController extends AbstractController
             }
             return $this->json(['validation_errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
         }
+
         $result = $this->postService->createPost($createPostDTO);
         return $this->json(['data' => $result->toArray()], Response::HTTP_CREATED);
     }

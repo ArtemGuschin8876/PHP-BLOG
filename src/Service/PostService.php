@@ -12,13 +12,14 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use DateTimeImmutable;
 
 
-
 class PostService
 {
 
     public function __construct(
         private PostRepository $postRepository,
-    ) {}
+    )
+    {
+    }
 
     public function getAllPosts(): array
     {
@@ -47,6 +48,14 @@ class PostService
         $post = $this->postRepository->findPostById($id);
         if (!$post) {
             throw new Exception('Post not found');
+        }
+
+        if ($updatePostDTO->getTitle()) {
+            $post->setTitle($updatePostDTO->getTitle());
+        }
+
+        if ($updatePostDTO->getContent()) {
+            $post->setContent($updatePostDTO->getContent());
         }
 
         $this->postRepository->save($post);
