@@ -15,15 +15,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PostController extends AbstractController
 {
     private PostService $postService;
     private PostNormalizer $normalizer;
+    private ValidatorInterface $validator;
 
-
-    public function __construct(PostService $postService, PostNormalizer $normalizer)
+    public function __construct(PostService $postService, PostNormalizer $normalizer, ValidatorInterface $validator)
     {
+        $this->validator = $validator;
         $this->normalizer = $normalizer;
         $this->postService = $postService;
     }
@@ -56,41 +58,44 @@ class PostController extends AbstractController
     public function createPost(Request $request): JsonResponse
     {
         $createPostDTO = new CreatePostDTO($request->toArray());
-        try {
-            $result = $this->postService->createPost($createPostDTO);
-            return $this->json(['data' => $result->toArray()], Response::HTTP_CREATED);
-        } catch (ValidationFailedException $exception) {
-            $violations = $exception->getViolations();
-            $errors = [];
-            foreach ($violations as $violation) {
-                $errors[] = [
-                    'message' => $violation->getMessage(),
-                    'property' => $violation->getPropertyPath(),
+
+        $errors = $this->validator->validate($createPostDTO);
+        if (count($errors) > 0) {
+            $errorMessages = [];
+
+            foreach ($errors as $error) {
+                $errorMessages[] = [
+                    'message' => $error->getMessage(),
+                    'property' => $error->getPropertyPath(),
                 ];
             }
-            return $this->json(['validation_errors' => $errors], Response::HTTP_BAD_REQUEST);
+            return $this->json(['validation_errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
         }
+        $result = $this->postService->createPost($createPostDTO);
+        return $this->json(['data' => $result->toArray()], Response::HTTP_CREATED);
     }
 
     #[Route('/post/update/{id}', name: 'post_update', methods: ['PUT'])]
     public function updatePostByID(Request $request, int $id): JsonResponse
     {
         $updatePostDTO = new UpdatePostDTO($request->toArray());
-        try {
-            $result = $this->postService->updatePostById($id, $updatePostDTO);
-            return $this->json(['data' => $result->toArray()], Response::HTTP_OK);
-        } catch (ValidationFailedException $exception) {
-            $violations = $exception->getViolations();
-            $errors = [];
 
-            foreach ($violations as $violation) {
-                $errors[] = [
-                    'message' => $violation->getMessage(),
-                    'property' => $violation->getPropertyPath(),
+        $errors = $this->validator->validate($updatePostDTO);
+        if (count($errors) > 0) {
+            $errorsMessages = [];
+
+            foreach ($errors as $error) {
+                $errorsMessages[] = [
+                    'message' => $error->getMessage(),
+                    'property' => $error->getPropertyPath(),
                 ];
+
             }
-            return $this->json(['validation_errors' => $errors], Response::HTTP_BAD_REQUEST);
+            return $this->json(['validation_errors' => $errorsMessages], Response::HTTP_BAD_REQUEST);
         }
+
+        $result = $this->postService->updatePostByID($id, $updatePostDTO);
+        return $this->json(['data' => $result->toArray()], Response::HTTP_OK);
     }
 
     #[Route('/post/delete/{id}', name: 'post_delete', methods: ['DELETE'])]

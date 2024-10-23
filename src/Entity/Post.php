@@ -26,9 +26,6 @@ class Post
         private ?\DateTimeImmutable $createdAt = null,
     )
     {
-        if ($this->createdAt === null) {
-            $this->createdAt = new DateTimeImmutable();
-        }
     }
 
     public function getId(): ?int
