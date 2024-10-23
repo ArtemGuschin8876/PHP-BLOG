@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Request\CreatePostDTO;
@@ -10,6 +11,7 @@ use App\Repository\PostRepository;
 use Doctrine\ORM\EntityNotFoundException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
@@ -17,6 +19,7 @@ class PostService
 {
     private PostRepository $postRepository;
     private ValidatorInterface $validator;
+
 
     public function __construct(PostRepository $postRepository, ValidatorInterface $validator)
     {
@@ -30,27 +33,24 @@ class PostService
     }
 
 
-    public function createPost(CreatePostDTO $createPostDTO): array
+    public function createPost(CreatePostDTO $createPostDTO): CreatePostDTO
     {
         $errors = $this->validator->validate($createPostDTO);
         if (count($errors) > 0) {
-            $errorMessages[] = [];
-            foreach ($errors as $error) {
-                $errorMessages[] = [
-                    'message' => $error->getMessage(),
-                    'property' => $error->getPropertyPath(),
-                ];
-            }
-            return ['status' => 'error', 'errors' => $errorMessages];
+            throw new ValidationFailedException($createPostDTO, $errors);
         }
 
-        $post = new Post();
-        $post->setTitle($createPostDTO->getTitle());
-        $post->setContent($createPostDTO->getContent());
+        $post = new Post(
+            $createPostDTO->getTitle(),
+            $createPostDTO->getContent(),
+            new \DateTimeImmutable()
+        );
 
         $this->postRepository->save($post);
-
-        return ['status' => 'success', 'post' => $createPostDTO->toArray()];
+        return new CreatePostDTO([
+            'title' => $post->getTitle(),
+            'content' => $post->getContent()
+        ]);
     }
 
     public function deletePost(Post $post): void
@@ -58,23 +58,16 @@ class PostService
         $this->postRepository->delete($post);
     }
 
-    public function updatePostByID(int $id, UpdatePostDTO $updatePostDTO): array
+    public function updatePostByID(int $id, UpdatePostDTO $updatePostDTO): UpdatePostDTO
     {
         $post = $this->postRepository->findPostById($id);
         if (!$post) {
-            return ['status' => 'error', 'message' => 'Post not found'];
+            throw new \Exception('Post not found');
         }
 
         $errors = $this->validator->validate($updatePostDTO);
         if (count($errors) > 0) {
-            $errorMessages[] = [];
-            foreach ($errors as $error) {
-                $errorMessages[] = [
-                    'message' => $error->getMessage(),
-                    'property' => $error->getPropertyPath(),
-                ];
-            }
-            return ['status' => 'error', 'errors' => $errorMessages];
+            throw new ValidationFailedException($updatePostDTO, $errors);
         }
 
         if ($updatePostDTO->getTitle()) {
@@ -85,7 +78,11 @@ class PostService
         }
 
         $this->postRepository->save($post);
-        return ['status' => 'success', 'post' => $updatePostDTO->toArray()];
+
+        return new UpdatePostDTO([
+            'title' => $updatePostDTO->getTitle(),
+            'content' => $updatePostDTO->getContent()
+        ]);
     }
 
 

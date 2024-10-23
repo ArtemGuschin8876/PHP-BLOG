@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\PostRepository;
@@ -15,6 +16,7 @@ class Post
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private int $id;
+
     public function __construct(
         #[ORM\Column(length: 255)]
         private ?string             $title = null,
@@ -22,7 +24,12 @@ class Post
         private ?string             $content = null,
         #[ORM\Column(type: 'datetime_immutable')]
         private ?\DateTimeImmutable $createdAt = null,
-    ){}
+    )
+    {
+        if ($this->createdAt === null) {
+            $this->createdAt = new DateTimeImmutable();
+        }
+    }
 
     public function getId(): ?int
     {
