@@ -23,7 +23,7 @@ class Post
         #[ORM\Column(type: 'text')]
         private ?string             $content = null,
         #[ORM\Column(type: 'datetime_immutable')]
-        private ?\DateTimeImmutable $createdAt = null,
+        private ?DateTimeImmutable $createdAt = new DateTimeImmutable(),
     )
     {
     }

@@ -8,7 +8,6 @@ use App\Request\CreatePostDTO;
 use App\Request\UpdatePostDTO;
 use App\Entity\Post;
 use App\Repository\PostRepository;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use DateTimeImmutable;
 
@@ -16,13 +15,10 @@ use DateTimeImmutable;
 
 class PostService
 {
-    private PostRepository $postRepository;
 
-
-    public function __construct(PostRepository $postRepository)
-    {
-        $this->postRepository = $postRepository;
-    }
+    public function __construct(
+        private PostRepository $postRepository,
+    ) {}
 
     public function getAllPosts(): array
     {
@@ -32,11 +28,9 @@ class PostService
 
     public function createPost(CreatePostDTO $createPostDTO): CreatePostDTO
     {
-
         $post = new Post(
             $createPostDTO->getTitle(),
             $createPostDTO->getContent(),
-            new DateTimeImmutable()
         );
 
         $this->postRepository->save($post);
@@ -53,13 +47,6 @@ class PostService
         $post = $this->postRepository->findPostById($id);
         if (!$post) {
             throw new Exception('Post not found');
-        }
-
-        if ($updatePostDTO->getTitle()) {
-            $post->setTitle($updatePostDTO->getTitle());
-        }
-        if ($updatePostDTO->getContent()) {
-            $post->setContent($updatePostDTO->getContent());
         }
 
         $this->postRepository->save($post);
