@@ -6,7 +6,6 @@ namespace App\Entity;
 
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\Table(name: 'post')]
@@ -19,12 +18,13 @@ class Post
 
     public function __construct(
         #[ORM\Column(length: 255)]
-        private ?string             $title = null,
+        private ?string $title = null,
         #[ORM\Column(type: 'text')]
-        private ?string             $content = null,
+        private ?string $content = null,
         #[ORM\Column(type: 'datetime_immutable')]
-        private ?DateTimeImmutable $createdAt = new DateTimeImmutable(),
-    ) {}
+        private ?\DateTimeImmutable $createdAt = new \DateTimeImmutable(),
+    ) {
+    }
 
     public function getId(): ?int
     {
@@ -55,9 +55,8 @@ class Post
         return $this;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
-
 }

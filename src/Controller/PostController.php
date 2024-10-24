@@ -5,27 +5,24 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Normalizers\PostNormalizer;
 use App\Request\CreatePostDTO;
 use App\Request\UpdatePostDTO;
-use App\Normalizers\PostNormalizer;
 use App\Service\PostService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PostController extends AbstractController
 {
-
     public function __construct(
-        private PostService        $postService,
-        private PostNormalizer     $normalizer,
-        private ValidatorInterface $validator
-    )
-    {
+        private PostService $postService,
+        private PostNormalizer $normalizer,
+        private ValidatorInterface $validator,
+    ) {
     }
 
     #[Route('/posts', name: 'posts', methods: ['GET'])]
@@ -37,18 +34,22 @@ class PostController extends AbstractController
             return $this->normalizer->normalize(
                 $post,
                 null,
-                ['mode' => 'default']);
+                ['mode' => 'default']
+            );
         }, $posts);
+
         return $this->json(['data' => $normalizedPosts], Response::HTTP_OK);
     }
 
     #[Route('/post/{id}', name: 'post_show', methods: ['GET'])]
-    public function show(Post $post): JsonResponse
+    public function showPost(Post $post): JsonResponse
     {
         $normalizedPost = $this->normalizer->normalize(
             $post,
             null,
-            ['mode' => 'default']);
+            ['mode' => 'default']
+        );
+
         return $this->json(['data' => $normalizedPost], Response::HTTP_OK);
     }
 
@@ -67,10 +68,12 @@ class PostController extends AbstractController
                     'property' => $error->getPropertyPath(),
                 ];
             }
+
             return $this->json(['validation_errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
         }
 
         $result = $this->postService->createPost($createPostDTO);
+
         return $this->json(['data' => $result->toArray()], Response::HTTP_CREATED);
     }
 
@@ -88,12 +91,13 @@ class PostController extends AbstractController
                     'message' => $error->getMessage(),
                     'property' => $error->getPropertyPath(),
                 ];
-
             }
+
             return $this->json(['validation_errors' => $errorsMessages], Response::HTTP_BAD_REQUEST);
         }
 
         $result = $this->postService->updatePostByID($id, $updatePostDTO);
+
         return $this->json(['data' => $result->toArray()], Response::HTTP_OK);
     }
 
@@ -101,9 +105,7 @@ class PostController extends AbstractController
     public function deletePostByID(Post $post): JsonResponse
     {
         $this->postService->deletePost($post);
+
         return $this->json(['status' => 'Post deleted'], Response::HTTP_OK);
     }
 }
-
-
-

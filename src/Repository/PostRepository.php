@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Post;
@@ -38,8 +39,4 @@ class PostRepository extends ServiceEntityRepository
         $this->getEntityManager()->remove($post);
         $this->getEntityManager()->flush();
     }
-
 }
-
-
-

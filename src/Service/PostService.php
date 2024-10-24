@@ -4,28 +4,23 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Request\CreatePostDTO;
-use App\Request\UpdatePostDTO;
 use App\Entity\Post;
 use App\Repository\PostRepository;
+use App\Request\CreatePostDTO;
+use App\Request\UpdatePostDTO;
 use Symfony\Component\Config\Definition\Exception\Exception;
-use DateTimeImmutable;
-
 
 class PostService
 {
-
     public function __construct(
         private PostRepository $postRepository,
-    )
-    {
+    ) {
     }
 
     public function getAllPosts(): array
     {
         return $this->postRepository->findAllPosts();
     }
-
 
     public function createPost(CreatePostDTO $createPostDTO): CreatePostDTO
     {
@@ -35,6 +30,7 @@ class PostService
         );
 
         $this->postRepository->save($post);
+
         return $createPostDTO;
     }
 
@@ -50,23 +46,16 @@ class PostService
             throw new Exception('Post not found');
         }
 
-        if ($updatePostDTO->getTitle()) {
-            $post->setTitle($updatePostDTO->getTitle());
-        }
-
-        if ($updatePostDTO->getContent()) {
-            $post->setContent($updatePostDTO->getContent());
-        }
+        $post->setTitle($updatePostDTO->getTitle())
+            ->setContent($updatePostDTO->getContent());
 
         $this->postRepository->save($post);
 
         return $updatePostDTO;
     }
 
-
     public function findPostById(int $id): ?Post
     {
         return $this->postRepository->findPostById($id);
     }
-
 }
