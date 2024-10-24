@@ -17,6 +17,9 @@ class PostService
     ) {
     }
 
+    /**
+     * @return Post[]
+     */
     public function getAllPosts(): array
     {
         return $this->postRepository->findAllPosts();
@@ -42,7 +45,7 @@ class PostService
     public function updatePostByID(int $id, UpdatePostDTO $updatePostDTO): UpdatePostDTO
     {
         $post = $this->postRepository->findPostById($id);
-        if (!$post) {
+        if (!$post instanceof \App\Entity\Post) {
             throw new Exception('Post not found');
         }
 

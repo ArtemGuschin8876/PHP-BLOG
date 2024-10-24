@@ -8,17 +8,21 @@ use App\Entity\Post;
 
 class PostNormalizer
 {
+    /**
+     * @param object               $object
+     * @param string|null          $format
+     * @param array<string, mixed> $context
+     * @return array<string, mixed>
+     */
     public function normalize($object, $format = null, array $context = []): array
     {
         if ('default' === $context['mode'] && $object instanceof Post) {
-            $postArray = [
+            return [
                 'id' => $object->getId(),
                 'title' => $object->getTitle(),
                 'content' => $object->getContent(),
                 'time' => $object->getCreatedAt()->format('Y-m-d H:i:s'),
             ];
-
-            return $postArray;
         } elseif ($context['mode'] && 'default' !== $context['mode']) {
             return ['message' => 'Неизвестный тип контекста.'];
         }

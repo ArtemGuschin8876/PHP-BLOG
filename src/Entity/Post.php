@@ -13,7 +13,7 @@ class Post
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    /** @phpstan-ignore-next-line */
     private int $id;
 
     public function __construct(
@@ -22,7 +22,7 @@ class Post
         #[ORM\Column(type: 'text')]
         private ?string $content = null,
         #[ORM\Column(type: 'datetime_immutable')]
-        private ?\DateTimeImmutable $createdAt = new \DateTimeImmutable(),
+        private \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
     ) {
     }
 

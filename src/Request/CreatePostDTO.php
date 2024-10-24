@@ -15,12 +15,17 @@ class CreatePostDTO
     #[Assert\Type('string')]
     private string $content;
 
+    /**
+     * @param array<string,string> $data
+     */
     public function __construct(array $data)
     {
         $this->title = $data['title'];
         $this->content = $data['content'];
     }
-
+    /**
+     * @return string[]
+     */
     public function toArray(): array
     {
         return [
