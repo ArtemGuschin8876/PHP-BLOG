@@ -1,7 +1,11 @@
 <?php
 
-namespace App\DTO;
+declare(strict_types=1);
+
+namespace App\Request;
+
 use Symfony\Component\Validator\Constraints as Assert;
+
 class CreatePostDTO
 {
     #[Assert\NotBlank]
@@ -21,7 +25,7 @@ class CreatePostDTO
     {
         return [
             'title' => $this->title,
-            'content' => $this->content
+            'content' => $this->content,
         ];
     }
 
@@ -30,9 +34,6 @@ class CreatePostDTO
         return $this->title;
     }
 
-    /**
-     * @return string
-     */
     public function getContent(): string
     {
         return $this->content;

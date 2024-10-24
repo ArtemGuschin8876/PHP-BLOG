@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Post;
@@ -23,10 +25,8 @@ class PostRepository extends ServiceEntityRepository
 
     public function save(Post $post): void
     {
-        $entityManager = $this->getEntityManager();
-
-        $entityManager->persist($post);
-        $entityManager->flush();
+        $this->getEntityManager()->persist($post);
+        $this->getEntityManager()->flush();
     }
 
     public function findPostById(int $id): ?Post
@@ -34,18 +34,9 @@ class PostRepository extends ServiceEntityRepository
         return $this->find($id);
     }
 
-    public function update(Post $post): void
-    {
-        $this->getEntityManager()->flush($post);
-    }
-
     public function delete(Post $post): void
     {
         $this->getEntityManager()->remove($post);
         $this->getEntityManager()->flush();
     }
-
 }
-
-
-
