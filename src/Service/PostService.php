@@ -1,102 +1,61 @@
-<?php 
+<?php
+
+declare(strict_types=1);
 
 namespace App\Service;
 
-use App\DTO\CreatePostDTO;
-use App\DTO\UpdatePostDTO;
 use App\Entity\Post;
 use App\Repository\PostRepository;
-use Doctrine\ORM\EntityNotFoundException;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-
+use App\Request\CreatePostDTO;
+use App\Request\UpdatePostDTO;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 class PostService
 {
-    private PostRepository $postRepository;
-    private ValidatorInterface $validator;
-
-    public function __construct(PostRepository $postRepository, ValidatorInterface $validator)
-    {
-        $this->postRepository = $postRepository;
-        $this->validator = $validator;
+    public function __construct(
+        private PostRepository $postRepository,
+    ) {
     }
 
-    public function getAllPosts():array
+    public function getAllPosts(): array
     {
         return $this->postRepository->findAllPosts();
     }
 
-
-    public function createPost(CreatePostDTO $createPostDTO): array
+    public function createPost(CreatePostDTO $createPostDTO): CreatePostDTO
     {
-       $errors = $this->validator->validate($createPostDTO);
-       if (count($errors) > 0) {
-           $errorMessages[] = [];
-           foreach ($errors as $error) {
-               $errorMessages[] = [
-                   'message' => $error->getMessage(),
-                   'property'=> $error->getPropertyPath(),
-               ];
-           }
-           return ['status' => 'error', 'errors' => $errorMessages];
-       }
+        $post = new Post(
+            $createPostDTO->getTitle(),
+            $createPostDTO->getContent(),
+        );
 
-       $post = new Post();
-       $post->setTitle($createPostDTO->getTitle());
-       $post->setContent($createPostDTO->getContent());
+        $this->postRepository->save($post);
 
-       $this->postRepository->save($post);
-
-       return ['status' => 'success', 'post' => $createPostDTO->toArray()];
+        return $createPostDTO;
     }
 
-    public function deletePost(int $id):void
+    public function deletePost(Post $post): void
     {
-        $post = $this->postRepository->findPostById($id);
-
-        if (!$post) {
-            throw new \Exception("Post not found");
-        }
-
-        $this->postRepository->delete($post, true);
+        $this->postRepository->delete($post);
     }
 
-    public function updatePostByID(int $id, UpdatePostDTO $updatePostDTO):array
+    public function updatePostByID(int $id, UpdatePostDTO $updatePostDTO): UpdatePostDTO
     {
         $post = $this->postRepository->findPostById($id);
         if (!$post) {
-            throw new \Exception("Post not found");
+            throw new Exception('Post not found');
         }
 
-        $errors = $this->validator->validate($updatePostDTO);
-        if (count($errors) > 0) {
-            $errorMessages[] = [];
-            foreach ($errors as $error) {
-                $errorMessages[] = [
-                    'message' => $error->getMessage(),
-                    'property'=> $error->getPropertyPath(),
-                ];
-            }
-            return ['status' => 'error', 'errors' => $errorMessages];
-        }
+        $post->setTitle($updatePostDTO->getTitle())
+            ->setContent($updatePostDTO->getContent());
 
-        if ($updatePostDTO->getTitle()) {
-            $post->setTitle($updatePostDTO->getTitle());
-        }
-        if ($updatePostDTO->getContent()) {
-            $post->setContent($updatePostDTO->getContent());
-        }
+        $this->postRepository->save($post);
 
-        $this->postRepository->update($post);
-        return ['status' => 'success', 'post' => $updatePostDTO->toArray()];
+        return $updatePostDTO;
     }
-
 
     public function findPostById(int $id): ?Post
     {
         return $this->postRepository->findPostById($id);
     }
-
 }
