@@ -10,10 +10,8 @@ class UpdatePostDTO
 {
     public function __construct(
         #[Assert\NotBlank]
-        #[Assert\Type('string')]
         public string $title,
         #[Assert\NotBlank]
-        #[Assert\Type('string')]
         public string $content,
     ) {
     }
