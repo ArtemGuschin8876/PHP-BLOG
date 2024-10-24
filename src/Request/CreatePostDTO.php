@@ -8,21 +8,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class CreatePostDTO
 {
-    #[Assert\NotBlank]
-    #[Assert\Type('string')]
-    private string $title;
-    #[Assert\NotBlank]
-    #[Assert\Type('string')]
-    private string $content;
-
-    /**
-     * @param array<string,string> $data
-     */
-    public function __construct(array $data)
-    {
-        $this->title = $data['title'];
-        $this->content = $data['content'];
+    public function __construct(
+        #[Assert\NotBlank]
+        #[Assert\Type('string')]
+        public string $title,
+        #[Assert\NotBlank]
+        #[Assert\Type('string')]
+        public string $content,
+    ) {
     }
+
     /**
      * @return string[]
      */

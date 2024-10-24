@@ -11,8 +11,8 @@ use App\Request\UpdatePostDTO;
 use App\Service\PostService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -21,7 +21,6 @@ class PostController extends AbstractController
     public function __construct(
         private PostService $postService,
         private PostNormalizer $normalizer,
-        private ValidatorInterface $validator,
     ) {
     }
 
@@ -54,47 +53,21 @@ class PostController extends AbstractController
     }
 
     #[Route('/create', name: 'post_create', methods: ['POST'])]
-    public function createPost(Request $request): JsonResponse
-    {
-        $createPostDTO = new CreatePostDTO($request->toArray());
-
-        $errors = $this->validator->validate($createPostDTO);
-        if (count($errors) > 0) {
-            $errorMessages = [];
-
-            foreach ($errors as $error) {
-                $errorMessages[] = [
-                    'message' => $error->getMessage(),
-                    'property' => $error->getPropertyPath(),
-                ];
-            }
-
-            return $this->json(['validation_errors' => $errorMessages], Response::HTTP_BAD_REQUEST);
-        }
+    public function createPost(
+        #[MapRequestPayload] CreatePostDTO $createPostDTO,
+    ): JsonResponse {
 
         $result = $this->postService->createPost($createPostDTO);
 
         return $this->json(['data' => $result->toArray()], Response::HTTP_CREATED);
+
     }
 
     #[Route('/post/update/{id}', name: 'post_update', methods: ['PUT'])]
-    public function updatePostByID(Request $request, int $id): JsonResponse
-    {
-        $updatePostDTO = new UpdatePostDTO($request->toArray());
-
-        $errors = $this->validator->validate($updatePostDTO);
-        if (count($errors) > 0) {
-            $errorsMessages = [];
-
-            foreach ($errors as $error) {
-                $errorsMessages[] = [
-                    'message' => $error->getMessage(),
-                    'property' => $error->getPropertyPath(),
-                ];
-            }
-
-            return $this->json(['validation_errors' => $errorsMessages], Response::HTTP_BAD_REQUEST);
-        }
+    public function updatePostByID(
+        #[MapRequestPayload] UpdatePostDTO $updatePostDTO,
+        int $id,
+    ): JsonResponse {
 
         $result = $this->postService->updatePostByID($id, $updatePostDTO);
 
