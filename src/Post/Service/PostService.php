@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Post\Service;
 
-use App\Entity\Post;
-use App\Repository\PostRepository;
-use App\Request\CreatePostDTO;
-use App\Request\UpdatePostDTO;
+use App\Post\Entity\Post;
+use App\Post\Repository\PostRepository;
+use App\Post\Request\CreatePostDTO;
+use App\Post\Request\UpdatePostDTO;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 class PostService
@@ -28,6 +28,7 @@ class PostService
     public function createPost(CreatePostDTO $createPostDTO): CreatePostDTO
     {
         $post = new Post(
+            $createPostDTO->getAuthor(),
             $createPostDTO->getTitle(),
             $createPostDTO->getContent(),
         );
@@ -45,7 +46,7 @@ class PostService
     public function updatePostByID(int $id, UpdatePostDTO $updatePostDTO): UpdatePostDTO
     {
         $post = $this->postRepository->findPostById($id);
-        if (!$post instanceof \App\Entity\Post) {
+        if (!$post instanceof Post) {
             throw new Exception('Post not found');
         }
 

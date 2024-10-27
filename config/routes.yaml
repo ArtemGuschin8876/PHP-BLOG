@@ -1,5 +1,5 @@
-controllers:
+post:
     resource:
-        path: ../src/Controller/
-        namespace: App\Controller
+        path: ../src/Post/Controller/
+        namespace: App\Post\Controller
     type: attribute

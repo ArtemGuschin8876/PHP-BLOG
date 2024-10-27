@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Post\Controller;
 
-use App\Entity\Post;
-use App\Normalizers\PostNormalizer;
-use App\Request\CreatePostDTO;
-use App\Request\UpdatePostDTO;
-use App\Service\PostService;
+use App\Post\Entity\Post;
+use App\Post\Normalizers\PostNormalizer;
+use App\Post\Request\CreatePostDTO;
+use App\Post\Request\UpdatePostDTO;
+use App\Post\Service\PostService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

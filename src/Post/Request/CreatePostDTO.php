@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Request;
+namespace App\Post\Request;
 
-use Symfony\Component\Validator\Constraints as Assert;
-
+use App\Post\Validator as PostAssert;
+#[PostAssert\ValidPost]
 class CreatePostDTO
 {
     public function __construct(
-        #[Assert\NotBlank]
+        public string $author,
+        #[PostAssert\UniqueTitle]
         public string $title,
-        #[Assert\NotBlank]
         public string $content,
     ) {
     }
@@ -22,6 +22,7 @@ class CreatePostDTO
     public function toArray(): array
     {
         return [
+            'author' => $this->author,
             'title' => $this->title,
             'content' => $this->content,
         ];
@@ -35,5 +36,10 @@ class CreatePostDTO
     public function getContent(): string
     {
         return $this->content;
+    }
+
+    public function getAuthor(): string
+    {
+        return $this->author;
     }
 }

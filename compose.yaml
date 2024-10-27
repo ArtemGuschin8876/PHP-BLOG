@@ -1,0 +1,50 @@
+services:
+  database:
+    container_name: database
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+    ports:
+      - "5432:5432"
+    networks:
+      - pyha
+
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: .docker/php/Dockerfile
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - database
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/var/www/app
+    networks:
+      - pyha
+
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: .docker/nginx/Dockerfile
+    depends_on:
+      - app
+    volumes:
+      - .:/var/www/app
+    ports:
+      - "8085:80"
+    networks:
+      - pyha
+
+networks:
+  pyha:
+    driver: bridge
+
+volumes:
+  database:
+  app:

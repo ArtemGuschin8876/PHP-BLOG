@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Normalizers;
+namespace App\Post\Normalizers;
 
-use App\Entity\Post;
+use App\Post\Entity\Post;
 
 class PostNormalizer
 {
@@ -19,6 +19,7 @@ class PostNormalizer
         if ('default' === $context['mode'] && $object instanceof Post) {
             return [
                 'id' => $object->getId(),
+                'author' => $object->getAuthor(),
                 'title' => $object->getTitle(),
                 'content' => $object->getContent(),
                 'time' => $object->getCreatedAt()->format('Y-m-d H:i:s'),
