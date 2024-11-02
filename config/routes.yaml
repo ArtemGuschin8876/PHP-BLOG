@@ -3,3 +3,9 @@ post:
         path: ../src/Post/Controller/
         namespace: App\Post\Controller
     type: attribute
+
+user:
+    resource:
+        path: ../src/User/Controller/
+        namespace: App\User\Controller
+    type: attribute

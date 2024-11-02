@@ -24,7 +24,7 @@ class PostController extends AbstractController
     }
 
     #[Route('/posts', name: 'posts', methods: ['GET'])]
-    public function list(): Response
+    public function list(): JsonResponse
     {
         $posts = $this->postService->getAllPosts();
 

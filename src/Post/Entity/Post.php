@@ -6,6 +6,7 @@ namespace App\Post\Entity;
 
 use App\Post\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\User\Entity\User;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\Table(name: 'post')]
@@ -17,8 +18,8 @@ class Post
     private int $id;
 
     public function __construct(
-        #[ORM\Column(length: 30)]
-        private string $author = 'Unknown',
+        #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
+        private User $author,
         #[ORM\Column(length: 255)]
         private ?string $title = null,
         #[ORM\Column(type: 'text')]
@@ -62,12 +63,12 @@ class Post
         return $this->createdAt;
     }
 
-    public function getAuthor(): string
+    public function getAuthor(): User
     {
         return $this->author;
     }
 
-    public function setAuthor(string $author): self
+    public function setAuthor(User $author): self
     {
         $this->author = $author;
 
