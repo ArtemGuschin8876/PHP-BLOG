@@ -38,8 +38,6 @@ class PostController extends AbstractController
             author: $post->getAuthor()->getId(),
         ), $posts);
 
-        dump($data);
-
         return $this->json($data);
     }
 

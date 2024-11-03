@@ -5,12 +5,11 @@ namespace App\Post\Response;
 class PostDetailResponse
 {
     public function __construct(
-        private int $id,
-        private string $title,
-        private string $content,
-        private string $date,
-        private int $author,
-    )
-    {
+        public int $id,
+        public string $title,
+        public string $content,
+        public string $date,
+        public int $author,
+    ) {
     }
 }
