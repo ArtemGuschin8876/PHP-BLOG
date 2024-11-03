@@ -9,6 +9,7 @@ use App\Post\Normalizers\PostNormalizer;
 use App\Post\Request\CreatePostDTO;
 use App\Post\Request\UpdatePostDTO;
 use App\Post\Service\PostService;
+use App\Post\Response\PostDetailResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,15 +29,18 @@ class PostController extends AbstractController
     {
         $posts = $this->postService->getAllPosts();
 
-        $normalizedPosts = array_map(function ($post) {
-            return $this->normalizer->normalize(
-                $post,
-                null,
-                ['mode' => 'default']
-            );
-        }, $posts);
 
-        return $this->json(['data' => $normalizedPosts], Response::HTTP_OK);
+        $data = array_map(static fn (Post $post): PostDetailResponse => new PostDetailResponse(
+            id: $post->getId(),
+            title: $post->getTitle(),
+            content: $post->getContent(),
+            date: $post->getCreatedAt()->format('Y-m-d H:i:s'),
+            author: $post->getAuthor()->getId(),
+        ), $posts);
+
+        dump($data);
+
+        return $this->json($data);
     }
 
     #[Route('/post/{id}', name: 'post_show', methods: ['GET'])]

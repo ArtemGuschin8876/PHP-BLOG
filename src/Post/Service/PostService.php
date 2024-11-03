@@ -8,12 +8,14 @@ use App\Post\Entity\Post;
 use App\Post\Repository\PostRepository;
 use App\Post\Request\CreatePostDTO;
 use App\Post\Request\UpdatePostDTO;
+use App\User\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 class PostService
 {
     public function __construct(
+        private UserRepository $userRepository,
         private PostRepository $postRepository,
         private EntityManagerInterface $entityManager,
     ) {
@@ -29,8 +31,7 @@ class PostService
 
     public function createPost(CreatePostDTO $createPostDTO): CreatePostDTO
     {
-
-        $author = $this->postRepository->find($createPostDTO->getAuthorId());
+        $author = $this->userRepository->find($createPostDTO->getAuthorId());
 
         if (!$author) {
             throw new Exception('Author not found');

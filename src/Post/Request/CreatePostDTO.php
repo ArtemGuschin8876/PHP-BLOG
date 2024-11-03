@@ -3,13 +3,14 @@
 declare(strict_types=1);
 
 namespace App\Post\Request;
+
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Post\Validator as PostAssert;
+
 class CreatePostDTO
 {
     public function __construct(
         #[Assert\NotBlank]
-        #[Assert\Type('integer')]
         private int $authorID,
         #[Assert\NotBlank]
         #[PostAssert\UniqueTitle]
