@@ -20,27 +20,22 @@ class UserController extends AbstractController
         private readonly UserService $userService,
     ) {
     }
-/*
+
     #[Route('/users', name: 'users', methods: ['GET'])]
     public function list(): JsonResponse
     {
         $users = $this->userService->getAllUsers();
 
-        $normalizedUsers = array_map(function ($user) {
-            return $this->userNormalizer->normalize(
-                $user,
-                null,
-                ['mode' => 'default']
-            );
-        }, $users);
+        $data = $this->userService->getUserDetailResponses($users);
 
-        return  $this->json(['data' => $normalizedUsers], Response::HTTP_OK);
+        return $this->json($data, Response::HTTP_OK);
+
     }
-*/
+
     #[Route('/user/{id}', name: 'user', methods: ['GET'])]
     public function showUser(User $user): JsonResponse
     {
-        $data = $this->userService->getUserByID($user->getId());
+        $data = $this->userService->getUserDetailResponse($user);
 
         return  $this->json(['data' => $data], Response::HTTP_OK);
     }

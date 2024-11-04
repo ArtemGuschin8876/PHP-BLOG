@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\User\Service;
 
+use App\Post\Entity\Post;
 use App\User\Entity\User;
 use App\User\Repository\UserRepository;
 use App\User\Request\CreateUserDTO;
 use App\User\Request\UpdateUserDTO;
+use App\User\Response\UserDetailResponse;
 
 class UserService
 {
@@ -59,5 +61,24 @@ class UserService
     public function deleteUser(User $user): void
     {
         $this->userRepository->delete($user);
+    }
+
+    private function createMappedToDetailUser(User $user): UserDetailResponse
+    {
+        return new UserDetailResponse(
+            $user->getId(),
+            $user->getName(),
+            $user->getEmail()
+        );
+    }
+
+    public function getUserDetailResponse(User $user): UserDetailResponse
+    {
+        return $this->createMappedToDetailUser($user);
+    }
+
+    public function getUserDetailResponses(array $users): array
+    {
+        return array_map(fn (User $user) => $this->createMappedToDetailUser($user), $users);
     }
 }
