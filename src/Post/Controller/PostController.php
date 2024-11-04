@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace App\Post\Controller;
 
 use App\Post\Entity\Post;
-use App\Post\Normalizers\PostNormalizer;
 use App\Post\Request\CreatePostDTO;
 use App\Post\Request\UpdatePostDTO;
 use App\Post\Service\PostService;
-use App\Post\Response\PostDetailResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +18,6 @@ class PostController extends AbstractController
 {
     public function __construct(
         private PostService $postService,
-        private PostNormalizer $normalizer,
     ) {
     }
 
@@ -29,14 +26,7 @@ class PostController extends AbstractController
     {
         $posts = $this->postService->getAllPosts();
 
-
-        $data = array_map(static fn (Post $post): PostDetailResponse => new PostDetailResponse(
-            id: $post->getId(),
-            title: $post->getTitle(),
-            content: $post->getContent(),
-            date: $post->getCreatedAt()->format('Y-m-d H:i:s'),
-            author: $post->getAuthor()->getId(),
-        ), $posts);
+        $data = $this->postService->getPostDetailResponses($posts);
 
         return $this->json($data);
     }
@@ -44,13 +34,9 @@ class PostController extends AbstractController
     #[Route('/post/{id}', name: 'post_show', methods: ['GET'])]
     public function showPost(Post $post): JsonResponse
     {
-        $normalizedPost = $this->normalizer->normalize(
-            $post,
-            null,
-            ['mode' => 'default']
-        );
+        $data = $this->postService->getPostDetailResponse($post);
 
-        return $this->json(['data' => $normalizedPost], Response::HTTP_OK);
+        return $this->json([$data], Response::HTTP_OK);
     }
 
     #[Route('/create', name: 'post_create', methods: ['POST'])]

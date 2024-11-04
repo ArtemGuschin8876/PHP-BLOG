@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\User\Controller;
 
 use App\User\Entity\User;
-use App\User\Normalizers\UserNormalizer;
 use App\User\Request\CreateUserDTO;
 use App\User\Request\UpdateUserDTO;
 use App\User\Service\UserService;
@@ -19,11 +18,9 @@ class UserController extends AbstractController
 {
     public function __construct(
         private readonly UserService $userService,
-        private readonly UserNormalizer $userNormalizer,
     ) {
-
     }
-
+/*
     #[Route('/users', name: 'users', methods: ['GET'])]
     public function list(): JsonResponse
     {
@@ -39,17 +36,13 @@ class UserController extends AbstractController
 
         return  $this->json(['data' => $normalizedUsers], Response::HTTP_OK);
     }
-
+*/
     #[Route('/user/{id}', name: 'user', methods: ['GET'])]
     public function showUser(User $user): JsonResponse
     {
-        $normalizedUser = $this->userNormalizer->normalize(
-            $user,
-            null,
-            ['mode' => 'default']
-        );
+        $data = $this->userService->getUserByID($user->getId());
 
-        return  $this->json(['data' => $normalizedUser], Response::HTTP_OK);
+        return  $this->json(['data' => $data], Response::HTTP_OK);
     }
 
     #[Route('/new', name: 'create_user', methods: ['POST'])]

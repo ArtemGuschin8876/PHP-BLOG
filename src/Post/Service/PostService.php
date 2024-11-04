@@ -8,6 +8,7 @@ use App\Post\Entity\Post;
 use App\Post\Repository\PostRepository;
 use App\Post\Request\CreatePostDTO;
 use App\Post\Request\UpdatePostDTO;
+use App\Post\Response\PostDetailResponse;
 use App\User\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
@@ -72,5 +73,26 @@ class PostService
     public function findPostById(int $id): ?Post
     {
         return $this->postRepository->findPostById($id);
+    }
+
+    private function createMappedToDetailPosts(Post $post): PostDetailResponse
+    {
+        return  new PostDetailResponse(
+            id: $post->getId(),
+            title: $post->getTitle(),
+            content: $post->getContent(),
+            date: $post->getCreatedAt()->format('Y-m-d H:i:s'),
+            author: $post->getAuthor()->getId(),
+        );
+    }
+
+    public function getPostDetailResponse(Post $post): PostDetailResponse
+    {
+        return $this->createMappedToDetailPosts($post);
+    }
+
+    public function getPostDetailResponses(array $posts): array
+    {
+        return array_map(fn (Post $post) => $this->createMappedToDetailPosts($post), $posts);
     }
 }
