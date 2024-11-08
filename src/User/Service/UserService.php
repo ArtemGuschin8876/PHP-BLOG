@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace App\User\Service;
 
-use App\Post\Entity\Post;
 use App\User\Entity\User;
 use App\User\Repository\UserRepository;
 use App\User\Request\CreateUserDTO;
 use App\User\Request\UpdateUserDTO;
 use App\User\Response\UserDetailResponse;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserService
 {
     public function __construct(
         private UserRepository $userRepository,
+        private UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
@@ -36,7 +37,13 @@ class UserService
         $user = new User(
             $createUserDTO->getName(),
             $createUserDTO->getEmail(),
+            $createUserDTO->getPassword(),
         );
+
+        $user->setRoles(['ROLE_USER']);
+
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $createUserDTO->getPassword());
+        $user->setPassword($hashedPassword);
 
         $this->userRepository->save($user);
 

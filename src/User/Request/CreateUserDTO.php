@@ -16,6 +16,8 @@ class CreateUserDTO
         #[Assert\NotBlank]
         #[UserValidator\UniqueEmail]
         private string $email,
+        #[Assert\NotBlank]
+        private string $password,
     ) {
     }
 
@@ -38,5 +40,10 @@ class CreateUserDTO
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
     }
 }

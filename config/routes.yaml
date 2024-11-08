@@ -1,3 +1,6 @@
+api_login_check:
+    path: /api/login_check
+
 post:
     resource:
         path: ../src/Post/Controller/
@@ -9,3 +12,5 @@ user:
         path: ../src/User/Controller/
         namespace: App\User\Controller
     type: attribute
+
+
