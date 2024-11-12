@@ -23,4 +23,4 @@ security:
 
     access_control:
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: ROLE_USER }
+        - { path: ^/api/users, roles: ROLE_USER }
