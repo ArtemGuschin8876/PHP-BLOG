@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use App\User\Entity\User;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
-#[ORM\Table(name: 'post')]
+#[ORM\Table(name: 'posts')]
 class Post
 {
     #[ORM\Id]
@@ -27,6 +27,14 @@ class Post
         #[ORM\Column(type: 'datetime_immutable')]
         private \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
     ) {
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'content' => $this->content,
+        ];
     }
 
     public function getId(): ?int

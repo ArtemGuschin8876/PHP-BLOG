@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use OpenApi\Attributes as OA;
 
-#[Route('/api')]
+#[Route('/api/users')]
 class UserController extends AbstractController
 {
     public function __construct(
@@ -28,7 +28,7 @@ class UserController extends AbstractController
     ) {
     }
 
-    #[Route('/users', name: 'users', methods: ['GET'])]
+    #[Route('/list', name: 'users', methods: ['GET'])]
     #[OA\Get(
         summary: 'Get all users',
         tags: ['Users'],
@@ -57,7 +57,7 @@ class UserController extends AbstractController
 
     }
 
-    #[Route('/user/{id}', name: 'user', methods: ['GET'])]
+    #[Route('/{id}', name: 'user', methods: ['GET'])]
     #[OA\Get(
         summary: 'Get a single user',
         tags: ['Users'],
@@ -91,7 +91,7 @@ class UserController extends AbstractController
         return  $this->json(['data' => $data], Response::HTTP_OK);
     }
 
-    #[Route('/new', name: 'create_user', methods: ['POST'])]
+    #[Route('/create', name: 'create_user', methods: ['POST'])]
     #[OA\Post(
         summary: 'Create new user',
         requestBody: new OA\RequestBody(
@@ -134,7 +134,7 @@ class UserController extends AbstractController
         return  $this->json(['data' => $result], Response::HTTP_CREATED);
     }
 
-    #[Route('/user/update/{id}', name: 'update_user', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_user', methods: ['PUT'])]
     #[OA\Put(
         summary: 'Update user',
         requestBody: new OA\RequestBody(
@@ -154,13 +154,14 @@ class UserController extends AbstractController
                     ],
                 ),
             ),
-            new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Unauthorized',
-            ),
+
             new OA\Response(
                 response: Response::HTTP_BAD_REQUEST,
                 description: 'Validation errors',
+            ),
+            new OA\Response(
+                response: Response::HTTP_UNAUTHORIZED,
+                description: 'Unauthorized',
             ),
             new OA\Response(
                 response: Response::HTTP_FORBIDDEN,
@@ -174,14 +175,14 @@ class UserController extends AbstractController
     )]
     public function updateUser(
         #[MapRequestPayload] UpdateUserDTO $updateUserDTO,
-        int $id,
+        User $user,
     ): JsonResponse {
-        $result = $this->userService->updateUser($id, $updateUserDTO);
+        $data = $this->userService->updateUser($user, $updateUserDTO);
 
-        return  $this->json(['data' => $result], Response::HTTP_OK);
+        return  $this->json(['data' => $data->toArray()], Response::HTTP_OK);
     }
 
-    #[Route('/user/delete/{id}', name: 'delete_user', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'delete_user', methods: ['DELETE'])]
     #[OA\Delete(
         summary: 'Delete a user',
         tags: ['Users'],

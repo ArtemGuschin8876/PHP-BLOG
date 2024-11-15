@@ -19,6 +19,7 @@ class UserService
     ) {
     }
 
+
     /**
      * @return User[]
      */
@@ -50,19 +51,15 @@ class UserService
         return $createUserDTO;
     }
 
-    public function updateUser(int $id, UpdateUserDTO $updateUserDTO): UpdateUserDTO
+    public function updateUser(User $user, UpdateUserDTO $updateUserDTO): User
     {
-        $user = $this->userRepository->findUserById($id);
-        if (!$user instanceof User) {
-            throw new \Exception('User not found');
-        }
 
         $user->setName($updateUserDTO->getName())
         ->setEmail($updateUserDTO->getEmail());
 
         $this->userRepository->save($user);
 
-        return $updateUserDTO;
+        return $user;
     }
 
     public function deleteUser(User $user): void

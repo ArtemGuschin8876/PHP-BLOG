@@ -35,6 +35,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     ) {
     }
 
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'email' => $this->email,
+        ];
+    }
+
     public function getUserIdentifier(): string
     {
         return $this->email;

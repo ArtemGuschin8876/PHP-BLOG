@@ -55,19 +55,15 @@ class PostService
         $this->postRepository->delete($post);
     }
 
-    public function updatePostByID(int $id, UpdatePostDTO $updatePostDTO): UpdatePostDTO
+    public function updatePostByID(Post $post, UpdatePostDTO $updatePostDTO): Post
     {
-        $post = $this->postRepository->findPostById($id);
-        if (!$post instanceof Post) {
-            throw new Exception('Post not found');
-        }
-
+//
         $post->setTitle($updatePostDTO->getTitle())
             ->setContent($updatePostDTO->getContent());
 
         $this->postRepository->save($post);
 
-        return $updatePostDTO;
+        return $post;
     }
 
     public function findPostById(int $id): ?Post

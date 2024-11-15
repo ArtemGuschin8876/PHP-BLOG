@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
 
-#[Route('/api')]
+#[Route('/api/posts')]
 class PostController extends AbstractController
 {
     public function __construct(
@@ -28,7 +28,7 @@ class PostController extends AbstractController
     ) {
     }
 
-    #[Route('/posts', name: 'posts', methods: ['GET'])]
+    #[Route('/list', name: 'posts', methods: ['GET'])]
     #[OA\Get(
         summary: 'Get all posts',
         tags: ['Posts'],
@@ -60,7 +60,7 @@ class PostController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/post/{id}', name: 'post_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'post_show', methods: ['GET'])]
     #[OA\Get(
         summary: 'Get a single post',
         tags: ['Posts'],
@@ -78,12 +78,12 @@ class PostController extends AbstractController
                 ),
             ),
             new OA\Response(
-                response: Response::HTTP_NOT_FOUND,
-                description: 'Post not found',
-            ),
-            new OA\Response(
                 response: Response::HTTP_UNAUTHORIZED,
                 description: 'Unauthorized',
+            ),
+            new OA\Response(
+                response: Response::HTTP_NOT_FOUND,
+                description: 'Post not found',
             ),
         ],
     )]
@@ -115,12 +115,12 @@ class PostController extends AbstractController
                 ),
             ),
             new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Unauthorized',
-            ),
-            new OA\Response(
                 response: Response::HTTP_BAD_REQUEST,
                 description: 'Validation errors',
+            ),
+            new OA\Response(
+                response: Response::HTTP_UNAUTHORIZED,
+                description: 'Unauthorized',
             ),
         ]
     )]
@@ -134,7 +134,7 @@ class PostController extends AbstractController
 
     }
 
-    #[Route('/post/update/{id}', name: 'post_update', methods: ['PUT'])]
+    #[Route('/{id}', name: 'post_update', methods: ['PUT'])]
     #[OA\Put(
         summary: 'Update a post',
         requestBody: new OA\RequestBody(
@@ -155,12 +155,12 @@ class PostController extends AbstractController
                 ),
             ),
             new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Unauthorized',
-            ),
-            new OA\Response(
                 response: Response::HTTP_BAD_REQUEST,
                 description: 'Validation errors',
+            ),
+            new OA\Response(
+                response: Response::HTTP_UNAUTHORIZED,
+                description: 'Unauthorized',
             ),
             new OA\Response(
                 response: Response::HTTP_NOT_FOUND,
@@ -170,15 +170,15 @@ class PostController extends AbstractController
     )]
     public function updatePostByID(
         #[MapRequestPayload] UpdatePostDTO $updatePostDTO,
-        int $id,
+        Post $post,
     ): JsonResponse {
 
-        $result = $this->postService->updatePostByID($id, $updatePostDTO);
+        $result = $this->postService->updatePostByID($post, $updatePostDTO);
 
         return $this->json(['data' => $result->toArray()], Response::HTTP_OK);
     }
 
-    #[Route('/post/delete/{id}', name: 'post_delete', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'post_delete', methods: ['DELETE'])]
     #[OA\Delete(
         summary: 'Delete a post',
         tags: ['Posts'],
