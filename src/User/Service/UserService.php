@@ -40,7 +40,7 @@ class UserService
             $createUserDTO->getPassword(),
         );
 
-        $user->setRoles(['ROLE_USER']);
+        $user->setRoles(['ROLE_USER', 'ROLE_USER_ADMIN']);
 
         $hashedPassword = $this->passwordHasher->hashPassword($user, $createUserDTO->getPassword());
         $user->setPassword($hashedPassword);

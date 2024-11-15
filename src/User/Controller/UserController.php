@@ -7,13 +7,17 @@ namespace App\User\Controller;
 use App\User\Entity\User;
 use App\User\Request\CreateUserDTO;
 use App\User\Request\UpdateUserDTO;
+use App\User\Response\UserGetResponse;
 use App\User\Service\UserService;
+use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use OpenApi\Attributes as OA;
 
+#[Route('/api')]
 class UserController extends AbstractController
 {
     public function __construct(
@@ -33,6 +37,27 @@ class UserController extends AbstractController
     }
 
     #[Route('/user/{id}', name: 'user', methods: ['GET'])]
+    #[OA\Get(
+        summary: 'Get a single user',
+        responses: [
+            new OA\Response(
+                response: Response::HTTP_OK,
+                description: 'Successful response',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: 'data',
+                            ref: new Model(type: UserGetResponse::class)
+                        ),
+                    ],
+                ),
+            ),
+            new OA\Response(
+                response: Response::HTTP_UNAUTHORIZED,
+                description: 'Unauthorized',
+            ),
+        ]
+    )]
     public function showUser(User $user): JsonResponse
     {
         $data = $this->userService->getUserDetailResponse($user);

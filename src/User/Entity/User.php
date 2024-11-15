@@ -34,6 +34,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         private Collection $posts = new ArrayCollection(),
     ) {
     }
+
     public function getUserIdentifier(): string
     {
         return $this->email;
@@ -50,7 +51,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
 
     public function getRoles(): array
     {
-       return $this->roles;
+        return $this->roles;
     }
 
     public function getPosts(): Collection
