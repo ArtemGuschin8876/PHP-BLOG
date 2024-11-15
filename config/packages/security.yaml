@@ -25,6 +25,12 @@ security:
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
         - { path: ^/api/users, roles: ROLE_USER }
         - { path: ^/api/user/\d+, roles: ROLE_USER_ADMIN }
-        - { path: ^/api/new, roles: ROLE_USER_ADMIN }
+        - { path: ^/api/new$, roles: ROLE_USER_ADMIN }
         - { path: ^/api/user/update/\d+, roles: ROLE_USER_ADMIN }
-        - { path: ^api/delete/\d+, roles: ROLE_USER_ADMIN }
+        - { path: ^api/delete/\d+$, roles: ROLE_USER_ADMIN }
+        - { path: ^api/posts, roles: ROLE_USER }
+        - { path: ^api/post/\d+, roles: ROLE_USER }
+        - { path: ^api/create$, roles: ROLE_USER }
+        - { path: ^api/post/update/\d+, roles: ROLE_USER }
+        - { path: ^api/post/delete/\d+$, roles: ROLE_USER }
+

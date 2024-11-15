@@ -47,6 +47,9 @@ nelmio_api_doc:
                         example: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...'
             '401':
               description: Invalid credentials
+
+
+
   areas:
     path_patterns:
       - ^/api(?!/doc$)
