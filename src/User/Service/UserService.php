@@ -6,8 +6,7 @@ namespace App\User\Service;
 
 use App\User\Entity\User;
 use App\User\Repository\UserRepository;
-use App\User\Request\CreateUserDTO;
-use App\User\Request\UpdateUserDTO;
+use App\User\Request\UpdateUserRequestDTO;
 use App\User\Response\UserDetailResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -18,7 +17,6 @@ class UserService
         private UserPasswordHasherInterface $passwordHasher,
     ) {
     }
-
 
     /**
      * @return User[]
@@ -33,31 +31,31 @@ class UserService
         return $this->userRepository->findUserById($id);
     }
 
-    public function createUser(CreateUserDTO $createUserDTO): CreateUserDTO
+    public function createUser(string $name, string $email, string $password): User
     {
         $user = new User(
-            $createUserDTO->getName(),
-            $createUserDTO->getEmail(),
-            $createUserDTO->getPassword(),
+            $name,
+            $email,
+            $password,
         );
 
         $user->setRoles(['ROLE_USER', 'ROLE_USER_ADMIN']);
 
-        $hashedPassword = $this->passwordHasher->hashPassword($user, $createUserDTO->getPassword());
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
 
-        $this->userRepository->save($user);
+        $this->userRepository->create($user);
 
-        return $createUserDTO;
+        return $user;
     }
 
-    public function updateUser(User $user, UpdateUserDTO $updateUserDTO): User
+    public function updateUser(User $user, UpdateUserRequestDTO $updateUserDTO): User
     {
 
         $user->setName($updateUserDTO->getName())
         ->setEmail($updateUserDTO->getEmail());
 
-        $this->userRepository->save($user);
+        $this->userRepository->save();
 
         return $user;
     }

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\User\Controller;
 
 use App\User\Entity\User;
-use App\User\Request\CreateUserDTO;
-use App\User\Request\UpdateUserDTO;
+use App\User\Request\CreateUserRequestDTO;
+use App\User\Request\UpdateUserRequestDTO;
 use App\User\Response\UserCreateResponse;
 use App\User\Response\UserDetailResponse;
 use App\User\Response\UserGetResponse;
@@ -16,6 +16,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use OpenApi\Attributes as OA;
@@ -28,7 +29,7 @@ class UserController extends AbstractController
     ) {
     }
 
-    #[Route('/list', name: 'users', methods: ['GET'])]
+    #[Route('/user', name: 'users', methods: [Request::METHOD_GET])]
     #[OA\Get(
         summary: 'Get all users',
         tags: ['Users'],
@@ -57,7 +58,7 @@ class UserController extends AbstractController
 
     }
 
-    #[Route('/{id}', name: 'user', methods: ['GET'])]
+    #[Route('/{id}', name: 'user', methods: [Request::METHOD_GET])]
     #[OA\Get(
         summary: 'Get a single user',
         tags: ['Users'],
@@ -91,11 +92,11 @@ class UserController extends AbstractController
         return  $this->json(['data' => $data], Response::HTTP_OK);
     }
 
-    #[Route('/create', name: 'create_user', methods: ['POST'])]
+    #[Route('/user', name: 'create_user', methods: [Request::METHOD_POST])]
     #[OA\Post(
         summary: 'Create new user',
         requestBody: new OA\RequestBody(
-            content: new OA\JsonContent(ref: new Model(type: CreateUserDTO::class)),
+            content: new OA\JsonContent(ref: new Model(type: CreateUserRequestDTO::class)),
         ),
         tags: ['Users'],
         responses: [
@@ -126,19 +127,23 @@ class UserController extends AbstractController
         ],
     )]
     public function createUser(
-        #[MapRequestPayload] CreateUserDTO $createUserDTO,
+        #[MapRequestPayload] CreateUserRequestDTO $createUserDTO,
     ): JsonResponse {
 
-        $result = $this->userService->createUser($createUserDTO);
+        $name = $createUserDTO->getName();
+        $email = $createUserDTO->getEmail();
+        $password = $createUserDTO->getPassword();
+
+        $result = $this->userService->createUser($name, $email, $password);
 
         return  $this->json(['data' => $result], Response::HTTP_CREATED);
     }
 
-    #[Route('/{id}', name: 'update_user', methods: ['PUT'])]
+    #[Route('/{id}', name: 'update_user', methods: [Request::METHOD_PUT])]
     #[OA\Put(
         summary: 'Update user',
         requestBody: new OA\RequestBody(
-            content: new OA\JsonContent(ref: new Model(type: UpdateUserDTO::class)),
+            content: new OA\JsonContent(ref: new Model(type: UpdateUserRequestDTO::class)),
         ),
         tags: ['Users'],
         responses: [
@@ -174,7 +179,7 @@ class UserController extends AbstractController
         ],
     )]
     public function updateUser(
-        #[MapRequestPayload] UpdateUserDTO $updateUserDTO,
+        #[MapRequestPayload] UpdateUserRequestDTO $updateUserDTO,
         User $user,
     ): JsonResponse {
         $data = $this->userService->updateUser($user, $updateUserDTO);
@@ -182,7 +187,7 @@ class UserController extends AbstractController
         return  $this->json(['data' => $data->toArray()], Response::HTTP_OK);
     }
 
-    #[Route('/{id}', name: 'delete_user', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'delete_user', methods: [Request::METHOD_DELETE])]
     #[OA\Delete(
         summary: 'Delete a user',
         tags: ['Users'],

@@ -26,7 +26,12 @@ class PostRepository extends ServiceEntityRepository
         return $this->findAll();
     }
 
-    public function save(Post $post): void
+    public function save(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    public function create(Post $post): void
     {
         $this->getEntityManager()->persist($post);
         $this->getEntityManager()->flush();

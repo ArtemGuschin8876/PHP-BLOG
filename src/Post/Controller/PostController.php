@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Post\Controller;
 
 use App\Post\Entity\Post;
-use App\Post\Request\CreatePostDTO;
-use App\Post\Request\UpdatePostDTO;
+use App\Post\Request\CreatePostRequestDTO;
+use App\Post\Request\UpdatePostRequestDTO;
 use App\Post\Response\PostCreateResponse;
 use App\Post\Response\PostDetailResponse;
 use App\Post\Response\PostGetResponse;
@@ -16,6 +16,7 @@ use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
@@ -28,7 +29,7 @@ class PostController extends AbstractController
     ) {
     }
 
-    #[Route('/list', name: 'posts', methods: ['GET'])]
+    #[Route('/post', name: 'posts', methods: [Request::METHOD_GET])]
     #[OA\Get(
         summary: 'Get all posts',
         tags: ['Posts'],
@@ -45,10 +46,7 @@ class PostController extends AbstractController
                 response: Response::HTTP_BAD_REQUEST,
                 description: 'Bad request',
             ),
-            new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Unauthorized',
-            ),
+
         ],
     )]
     public function list(): JsonResponse
@@ -60,7 +58,7 @@ class PostController extends AbstractController
         return $this->json($data);
     }
 
-    #[Route('/{id}', name: 'post_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'post_show', methods: [Request::METHOD_GET])]
     #[OA\Get(
         summary: 'Get a single post',
         tags: ['Posts'],
@@ -77,10 +75,7 @@ class PostController extends AbstractController
                     ],
                 ),
             ),
-            new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Unauthorized',
-            ),
+
             new OA\Response(
                 response: Response::HTTP_NOT_FOUND,
                 description: 'Post not found',
@@ -94,11 +89,11 @@ class PostController extends AbstractController
         return $this->json([$data], Response::HTTP_OK);
     }
 
-    #[Route('/create', name: 'post_create', methods: ['POST'])]
+    #[Route('/post', name: 'post_create', methods: [Request::METHOD_POST])]
     #[OA\Post(
         summary: 'Create a post',
         requestBody: new OA\RequestBody(
-            content: new OA\JsonContent(ref: new Model(type: CreatePostDTO::class)),
+            content: new OA\JsonContent(ref: new Model(type: CreatePostRequestDTO::class)),
         ),
         tags: ['Posts'],
         responses: [
@@ -118,27 +113,28 @@ class PostController extends AbstractController
                 response: Response::HTTP_BAD_REQUEST,
                 description: 'Validation errors',
             ),
-            new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Unauthorized',
-            ),
+
         ]
     )]
     public function createPost(
-        #[MapRequestPayload] CreatePostDTO $createPostDTO,
+        #[MapRequestPayload] CreatePostRequestDTO $createPostDTO,
     ): JsonResponse {
 
-        $result = $this->postService->createPost($createPostDTO);
+        $title = $createPostDTO->getTitle();
+        $content = $createPostDTO->getContent();
+        $authorId = $createPostDTO->getAuthorId();
 
-        return $this->json(['data' => $result->toArray()], Response::HTTP_CREATED);
+        $result = $this->postService->createPost($title, $content, $authorId);
+
+        return $this->json(['data' => $result], Response::HTTP_CREATED);
 
     }
 
-    #[Route('/{id}', name: 'post_update', methods: ['PUT'])]
+    #[Route('/{id}', name: 'post_update', methods: [Request::METHOD_PUT])]
     #[OA\Put(
         summary: 'Update a post',
         requestBody: new OA\RequestBody(
-            content: new OA\JsonContent(ref: new Model(type: UpdatePostDTO::class)),
+            content: new OA\JsonContent(ref: new Model(type: UpdatePostRequestDTO::class)),
         ),
         tags: ['Posts'],
         responses: [
@@ -158,10 +154,7 @@ class PostController extends AbstractController
                 response: Response::HTTP_BAD_REQUEST,
                 description: 'Validation errors',
             ),
-            new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Unauthorized',
-            ),
+
             new OA\Response(
                 response: Response::HTTP_NOT_FOUND,
                 description: 'User not found',
@@ -169,16 +162,16 @@ class PostController extends AbstractController
         ],
     )]
     public function updatePostByID(
-        #[MapRequestPayload] UpdatePostDTO $updatePostDTO,
+        #[MapRequestPayload] UpdatePostRequestDTO $updatePostDTO,
         Post $post,
     ): JsonResponse {
 
-        $result = $this->postService->updatePostByID($post, $updatePostDTO);
+        $result = $this->postService->updatePost($post, $updatePostDTO);
 
-        return $this->json(['data' => $result->toArray()], Response::HTTP_OK);
+        return $this->json(['data' => $result], Response::HTTP_OK);
     }
 
-    #[Route('/{id}', name: 'post_delete', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'post_delete', methods: [Request::METHOD_DELETE])]
     #[OA\Delete(
         summary: 'Delete a post',
         tags: ['Posts'],
@@ -187,10 +180,7 @@ class PostController extends AbstractController
                 response: Response::HTTP_NO_CONTENT,
                 description: 'User deleted successfully',
             ),
-            new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Authentication required',
-            ),
+
             new OA\Response(
                 response: Response::HTTP_NOT_FOUND,
                 description: 'Post not found',

@@ -6,8 +6,7 @@ namespace App\Post\Service;
 
 use App\Post\Entity\Post;
 use App\Post\Repository\PostRepository;
-use App\Post\Request\CreatePostDTO;
-use App\Post\Request\UpdatePostDTO;
+use App\Post\Request\UpdatePostRequestDTO;
 use App\Post\Response\PostDetailResponse;
 use App\User\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,9 +29,9 @@ class PostService
         return $this->postRepository->findAllPosts();
     }
 
-    public function createPost(CreatePostDTO $createPostDTO): CreatePostDTO
+    public function createPost(string $content, string $title, int $authorId): Post
     {
-        $author = $this->userRepository->find($createPostDTO->getAuthorId());
+        $author = $this->userRepository->find($authorId);
 
         if (!$author) {
             throw new Exception('Author not found');
@@ -40,14 +39,14 @@ class PostService
 
         $post = new Post(
             $author,
-            $createPostDTO->getTitle(),
-            $createPostDTO->getContent(),
+            $title,
+            $content,
         );
 
 
-        $this->postRepository->save($post);
+        $this->postRepository->create($post);
 
-        return $createPostDTO;
+        return $post;
     }
 
     public function deletePost(Post $post): void
@@ -55,13 +54,13 @@ class PostService
         $this->postRepository->delete($post);
     }
 
-    public function updatePostByID(Post $post, UpdatePostDTO $updatePostDTO): Post
+    public function updatePost(Post $post, UpdatePostRequestDTO $updatePostDTO): Post
     {
-//
+
         $post->setTitle($updatePostDTO->getTitle())
             ->setContent($updatePostDTO->getContent());
 
-        $this->postRepository->save($post);
+        $this->postRepository->save();
 
         return $post;
     }

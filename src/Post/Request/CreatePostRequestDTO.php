@@ -7,7 +7,7 @@ namespace App\Post\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Post\Validator as PostAssert;
 
-class CreatePostDTO
+class CreatePostRequestDTO
 {
     public function __construct(
         #[Assert\NotBlank]

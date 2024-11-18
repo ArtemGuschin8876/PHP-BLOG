@@ -1,17 +1,18 @@
 <?php
+
 declare(strict_types=1);
 
-namespace App\User\Request;
+namespace App\Post\Request;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UpdateUserDTO
+class UpdatePostRequestDTO
 {
     public function __construct(
         #[Assert\NotBlank]
-        private string $name,
+        public string $title,
         #[Assert\NotBlank]
-        private string $email,
+        public string $content,
     ) {
     }
 
@@ -21,18 +22,18 @@ class UpdateUserDTO
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
-            'email' => $this->email,
+            'title' => $this->title,
+            'content' => $this->content,
         ];
     }
 
-    public function getName(): string
+    public function getTitle(): string
     {
-        return $this->name;
+        return $this->title;
     }
 
-    public function getEmail(): string
+    public function getContent(): string
     {
-        return $this->email;
+        return $this->content;
     }
 }

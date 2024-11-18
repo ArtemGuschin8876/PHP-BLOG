@@ -7,7 +7,7 @@ namespace App\User\Request;
 use App\User\Validator as UserValidator;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class CreateUserDTO
+class CreateUserRequestDTO
 {
     public function __construct(
         #[Assert\NotBlank]
