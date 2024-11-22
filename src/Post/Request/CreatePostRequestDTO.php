@@ -19,31 +19,4 @@ class CreatePostRequestDTO
         public string $content,
     ) {
     }
-
-    /**
-     * @return string[]
-     */
-//    public function toArray(): array
-//    {
-//        return [
-//            'author' => $this->authorID,
-//            'title' => $this->title,
-//            'content' => $this->content,
-//        ];
-//    }
-//
-//    public function getTitle(): string
-//    {
-//        return $this->title;
-//    }
-//
-//    public function getContent(): string
-//    {
-//        return $this->content;
-//    }
-//
-//    public function getAuthorID(): int
-//    {
-//        return $this->authorID;
-//    }
 }

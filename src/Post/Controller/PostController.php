@@ -168,7 +168,7 @@ class PostController extends AbstractController
 
         $result = $this->postService->updatePost($post, $updatePostDTO);
 
-        return $this->json(['data' => $result], Response::HTTP_OK);
+        return $this->json(['data' => $result->toArray()], Response::HTTP_OK);
     }
 
     #[Route('/{id}', name: 'post_delete', methods: [Request::METHOD_DELETE])]

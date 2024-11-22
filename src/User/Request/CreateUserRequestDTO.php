@@ -11,39 +11,14 @@ class CreateUserRequestDTO
 {
     public function __construct(
         #[Assert\NotBlank]
-        private string $name,
+        public string $name,
         #[Assert\Email]
         #[Assert\NotBlank]
         #[UserValidator\UniqueEmail]
-        private string $email,
+        public string $email,
         #[Assert\NotBlank]
-        private string $password,
+        public string $password,
     ) {
     }
 
-    /**
-     * @return string[]
-     */
-    public function toArray(): array
-    {
-        return [
-            'name' => $this->name,
-            'email' => $this->email,
-        ];
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
 }

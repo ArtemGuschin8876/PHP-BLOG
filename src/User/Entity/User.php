@@ -32,6 +32,8 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         private array $roles = [],
         #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author')]
         private Collection $posts = new ArrayCollection(),
+        #[ORM\Column(type: 'datetime_immutable')]
+        private \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
     ) {
     }
 
@@ -62,11 +64,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->roles;
     }
 
-    public function getPosts(): Collection
-    {
-        return $this->posts;
-    }
-
     public function getName(): string
     {
         return $this->name;
@@ -80,6 +77,11 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 
     public function setName(string $name): self
