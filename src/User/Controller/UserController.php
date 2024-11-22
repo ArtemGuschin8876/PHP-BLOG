@@ -130,11 +130,11 @@ class UserController extends AbstractController
         #[MapRequestPayload] CreateUserRequestDTO $createUserDTO,
     ): JsonResponse {
 
-        $name = $createUserDTO->getName();
-        $email = $createUserDTO->getEmail();
-        $password = $createUserDTO->getPassword();
-
-        $result = $this->userService->createUser($name, $email, $password);
+        $result = $this->userService->createUser(
+            $createUserDTO->getName(),
+            $createUserDTO->getEmail(),
+            $createUserDTO->getPassword(),
+        );
 
         return  $this->json(['data' => $result], Response::HTTP_CREATED);
     }
