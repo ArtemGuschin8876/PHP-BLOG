@@ -22,7 +22,7 @@ class ShowSingleUserCest
 
     public function showSingleUser(FunctionalTester $I): void
     {
-
+        $I->sendGET('/users');
 
 
     }
