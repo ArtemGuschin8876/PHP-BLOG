@@ -24,9 +24,11 @@ security:
     access_control:
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
 
-        - { path: ^/api/users/\d+, roles: PUBLIC_ACCESS, methods: [GET, PUT, DELETE] }
-        - { path: ^/api/users/user, roles: PUBLIC_ACCESS, methods: [GET, POST] }
+        - { path: ^/api/users/\d+$, roles: PUBLIC_ACCESS, methods: [GET] }
+        - { path: ^/api/users/user$, roles: PUBLIC_ACCESS, methods: [GET, POST] }
+        - { path: ^/api/users/\d+$, roles: ROLE_USER_ADMIN, methods: [PUT] }
+        - { path: ^/api/users/\d+$, roles: ROLE_USER_ADMIN, methods: [DELETE] }
 
-        - { path: ^api/posts/\d+, roles: ROLE_USER, methods: [GET ,PUT, DELETE] }
-        - { path: ^api/posts/post, roles: ROLE_USER, methods: [GET, POST] }
+        - { path: ^api/posts/\d+$, roles: PUBLIC_ACCESS, methods: [GET ,PUT, DELETE] }
+        - { path: ^api/posts$, roles: PUBLIC_ACCESS, methods: [GET, POST] }
 

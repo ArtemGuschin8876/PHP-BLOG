@@ -29,7 +29,7 @@ class PostController extends AbstractController
     ) {
     }
 
-    #[Route('/post', name: 'posts', methods: [Request::METHOD_GET])]
+    #[Route('/', name: 'posts', methods: [Request::METHOD_GET])]
     #[OA\Get(
         summary: 'Get all posts',
         tags: ['Posts'],
@@ -89,7 +89,7 @@ class PostController extends AbstractController
         return $this->json([$data], Response::HTTP_OK);
     }
 
-    #[Route('/post', name: 'post_create', methods: [Request::METHOD_POST])]
+    #[Route('/', name: 'post_create', methods: [Request::METHOD_POST])]
     #[OA\Post(
         summary: 'Create a post',
         requestBody: new OA\RequestBody(
@@ -120,11 +120,11 @@ class PostController extends AbstractController
         #[MapRequestPayload] CreatePostRequestDTO $createPostDTO,
     ): JsonResponse {
 
-        $title = $createPostDTO->getTitle();
-        $content = $createPostDTO->getContent();
-        $authorId = $createPostDTO->getAuthorId();
-
-        $result = $this->postService->createPost($title, $content, $authorId);
+        $result = $this->postService->createPost(
+            $createPostDTO->title,
+            $createPostDTO->content,
+            $createPostDTO->authorID
+        );
 
         return $this->json(['data' => $result], Response::HTTP_CREATED);
 
@@ -168,7 +168,7 @@ class PostController extends AbstractController
 
         $result = $this->postService->updatePost($post, $updatePostDTO);
 
-        return $this->json(['data' => $result], Response::HTTP_OK);
+        return $this->json(['data' => $result->toArray()], Response::HTTP_OK);
     }
 
     #[Route('/{id}', name: 'post_delete', methods: [Request::METHOD_DELETE])]
@@ -187,7 +187,7 @@ class PostController extends AbstractController
             ),
         ],
     )]
-    public function deletePostByID(Post $post): JsonResponse
+    public function deletePost(Post $post): JsonResponse
     {
         $this->postService->deletePost($post);
 

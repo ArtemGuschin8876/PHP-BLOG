@@ -29,7 +29,7 @@ class PostService
         return $this->postRepository->findAllPosts();
     }
 
-    public function createPost(string $content, string $title, int $authorId): Post
+    public function createPost(string $content, string $title, int $authorId): array
     {
         $author = $this->userRepository->find($authorId);
 
@@ -46,7 +46,10 @@ class PostService
 
         $this->postRepository->create($post);
 
-        return $post;
+        return [
+            'id' => $post->getId(),
+            'createdAt' => $post->getCreatedAt(),
+        ];
     }
 
     public function deletePost(Post $post): void

@@ -11,39 +11,12 @@ class CreatePostRequestDTO
 {
     public function __construct(
         #[Assert\NotBlank]
-        private int $authorID,
+        public int $authorID,
         #[Assert\NotBlank]
         #[PostAssert\UniqueTitle]
-        private string $title,
+        public string $title,
         #[Assert\NotBlank]
-        private string $content,
+        public string $content,
     ) {
-    }
-
-    /**
-     * @return string[]
-     */
-    public function toArray(): array
-    {
-        return [
-            'author' => $this->authorID,
-            'title' => $this->title,
-            'content' => $this->content,
-        ];
-    }
-
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function getContent(): string
-    {
-        return $this->content;
-    }
-
-    public function getAuthorID(): int
-    {
-        return $this->authorID;
     }
 }

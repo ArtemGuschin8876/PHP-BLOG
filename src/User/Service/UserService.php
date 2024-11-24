@@ -31,7 +31,7 @@ class UserService
         return $this->userRepository->findUserById($id);
     }
 
-    public function createUser(string $name, string $email, string $password): User
+    public function createUser(string $name, string $email, string $password): array
     {
         $user = new User(
             $name,
@@ -46,7 +46,10 @@ class UserService
 
         $this->userRepository->create($user);
 
-        return $user;
+        return [
+            'id' => $user->getId(),
+            'createdAt' => $user->getCreatedAt(),
+        ];
     }
 
     public function updateUser(User $user, UpdateUserRequestDTO $updateUserDTO): User

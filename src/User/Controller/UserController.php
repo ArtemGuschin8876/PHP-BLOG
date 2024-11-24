@@ -42,10 +42,6 @@ class UserController extends AbstractController
                     items: new OA\Items(ref: new Model(type: UserDetailResponse::class)),
                 ),
             ),
-            new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Unauthorized',
-            ),
         ],
     )]
     public function list(): JsonResponse
@@ -74,10 +70,6 @@ class UserController extends AbstractController
                         ),
                     ],
                 ),
-            ),
-            new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Unauthorized',
             ),
             new OA\Response(
                 response: Response::HTTP_NOT_FOUND,
@@ -130,11 +122,11 @@ class UserController extends AbstractController
         #[MapRequestPayload] CreateUserRequestDTO $createUserDTO,
     ): JsonResponse {
 
-        $name = $createUserDTO->getName();
-        $email = $createUserDTO->getEmail();
-        $password = $createUserDTO->getPassword();
-
-        $result = $this->userService->createUser($name, $email, $password);
+        $result = $this->userService->createUser(
+            $createUserDTO->name,
+            $createUserDTO->email,
+            $createUserDTO->password,
+        );
 
         return  $this->json(['data' => $result], Response::HTTP_CREATED);
     }
@@ -182,6 +174,7 @@ class UserController extends AbstractController
         #[MapRequestPayload] UpdateUserRequestDTO $updateUserDTO,
         User $user,
     ): JsonResponse {
+
         $data = $this->userService->updateUser($user, $updateUserDTO);
 
         return  $this->json(['data' => $data->toArray()], Response::HTTP_OK);
