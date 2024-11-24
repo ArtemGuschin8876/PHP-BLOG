@@ -42,11 +42,6 @@ class PostController extends AbstractController
                     items: new OA\Items(ref: new Model(type: PostDetailResponse::class)),
                 ),
             ),
-            new OA\Response(
-                response: Response::HTTP_BAD_REQUEST,
-                description: 'Bad request',
-            ),
-
         ],
     )]
     public function list(): JsonResponse
