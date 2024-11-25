@@ -26,10 +26,7 @@ class UserService
         return $this->userRepository->findAllUsers();
     }
 
-    public function getUserByID(int $id): ?User
-    {
-        return $this->userRepository->findUserById($id);
-    }
+
 
     public function createUser(string $name, string $email, string $password): array
     {
@@ -39,7 +36,7 @@ class UserService
             $password,
         );
 
-        $user->setRoles(['ROLE_USER', 'ROLE_USER_ADMIN']);
+        $user->setRoles(['ROLE_USER']);
 
         $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);

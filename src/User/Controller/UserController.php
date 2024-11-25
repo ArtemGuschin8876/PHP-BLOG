@@ -79,6 +79,7 @@ class UserController extends AbstractController
     )]
     public function showUser(User $user): JsonResponse
     {
+
         $data = $this->userService->getUserDetailResponse($user);
 
         return  $this->json(['data' => $data], Response::HTTP_OK);

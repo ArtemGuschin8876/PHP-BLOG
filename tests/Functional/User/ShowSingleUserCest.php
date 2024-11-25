@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Tests\Functional\User;
 
 use App\Tests\Support\FunctionalTester;
@@ -21,13 +21,27 @@ class ShowSingleUserCest
 
     public function showSingleUserSuccessfully(FunctionalTester $I): void
     {
-        $I->sendGet('api/users/{id}'.$this->otherUser->getId());
+        $I->sendGet('api/users/'.$this->otherUser->getId());
         $I->seeResponseCodeIs(Response::HTTP_OK);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([
-            'id' => $this->otherUser->getId(),
-            'name' => 'Test User',
-            'email' => 'test@test.com',
+            'data' => [
+                'id' => $this->otherUser->getId(),
+                'name' => $this->otherUser->getName(),
+                'email' => $this->otherUser->getEmail(),
+            ],
         ]);
+    }
+
+    public function showSingleUserNotFound(FunctionalTester $I): void
+    {
+        $I->sendGet('api/users/0000');
+        $I->seeResponseCodeIs(Response::HTTP_NOT_FOUND);
+    }
+
+    public function showSingleUserInvalidID(FunctionalTester $I): void
+    {
+        $I->sendGet('api/users/invalid-id');
+        $I->seeResponseCodeIs(Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

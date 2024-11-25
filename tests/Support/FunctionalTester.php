@@ -21,6 +21,7 @@ use App\User\Entity\User;
  * @method void comment($description)
  * @method User createUser(array $data)
  * @method void pause($vars = [])
+ * @method void loginAsUser(string $email, string $password)
  *
  * @SuppressWarnings(PHPMD)
  */
