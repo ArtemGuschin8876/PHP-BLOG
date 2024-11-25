@@ -9,6 +9,10 @@
         "php": "^8.3",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "codeception/module-asserts": "*",
+        "codeception/module-doctrine": "^3.1",
+        "codeception/module-phpbrowser": "*",
+        "doctrine/dbal": "^4.2",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^3.3",
@@ -30,12 +34,9 @@
         "symfony/serializer": "7.1.*",
         "symfony/twig-bundle": "7.1.*",
         "symfony/validator": "7.1.*",
-        "symfony/yaml": "7.1.*",
-        "codeception/module-phpbrowser": "*",
-        "codeception/module-asserts": "*"
+        "symfony/yaml": "7.1.*"
     },
     "require-dev": {
-        "codeception/module-doctrine2": "^3.0",
         "codeception/module-rest": "^3.4",
         "codeception/module-symfony": "^3.5",
         "friendsofphp/php-cs-fixer": "^3.64",
