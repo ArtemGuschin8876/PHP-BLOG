@@ -8,6 +8,7 @@ use Codeception\Module;
 use Codeception\Module\REST;
 use Codeception\Module\Symfony;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class FunctionalHelper extends Module
@@ -27,7 +28,7 @@ class FunctionalHelper extends Module
             'password' => $password,
         ]);
 
-        $rest->seeResponseCodeIs(200);
+        $rest->seeResponseCodeIs(Response::HTTP_OK);
 
         $token = $rest->grabDataFromResponseByJsonPath('$.token')[0];
         $rest->haveHttpHeader('Authorization', "Bearer {$token}");
@@ -50,9 +51,8 @@ class FunctionalHelper extends Module
             name: $data['name'],
             email: $data['email'],
             password: $data['password'],
+            roles: $data['roles'] ?? ['ROLE_USER'],
         );
-
-        $user->setRoles(['ROLE_USER']);
 
         $encodedPassword = $passwordHasher->hashPassword($user, $data['password']);
         $user->setPassword($encodedPassword);
