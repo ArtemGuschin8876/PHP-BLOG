@@ -16,7 +16,7 @@ class DeleteUserCest
             'name' => 'admin',
             'email' => 'admin@test.com',
             'password' => 'AdminPassword',
-            'roles' => ['ROLE_USER_ADMIN'],
+            'roles' => ['ROLE_ADMINISTRATOR'],
         ]);
 
         $I->createUser([

@@ -17,7 +17,7 @@ class CreateUserCest
     public function createUserSuccessfully(FunctionalTester $I): void
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPost('api/users/user', [
+        $I->sendPost('api/users/', [
             'name' => 'Test User',
             'email' => 'test@test.com',
             'password' => 'password',
@@ -33,9 +33,9 @@ class CreateUserCest
 
         $I->assertGreaterThan(0, $userCreatedAt);
 
-        $I->assertMatchesRegularExpression(
-            '/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+00:00$/',
-            $userCreatedAt
+        $I->assertNotFalse(
+            \DateTime::createFromFormat(DATE_ATOM, $userCreatedAt),
+            'The "createdAt" field is not a valid ISO 8601 datetime string.'
         );
 
         $I->seeInRepository(
@@ -50,7 +50,7 @@ class CreateUserCest
     public function createUserValidationFailed(FunctionalTester $I): void
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
-        $I->sendPost('api/users/user', [
+        $I->sendPost('api/users/', [
             'name' => 'Test User',
             // отсутствует поле email и password
         ]);
@@ -73,10 +73,11 @@ class CreateUserCest
         $response = json_decode($I->grabResponse(), true);
 
         $I->assertArrayHasKey('errors', $response);
-        $I->assertCount(count($expectedErrors), $response['errors']);
 
-        foreach ($expectedErrors as $expectedError) {
-            $I->assertContains($expectedError, $response['errors']);
-        }
+        $I->assertSame(
+            $expectedErrors,
+            $response['errors'],
+            'The errors in the response do not match the expected errors.'
+        );
     }
 }

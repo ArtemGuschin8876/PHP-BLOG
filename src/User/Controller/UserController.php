@@ -29,7 +29,7 @@ class UserController extends AbstractController
     ) {
     }
 
-    #[Route('/user', name: 'users', methods: [Request::METHOD_GET])]
+    #[Route('/', name: 'users', methods: [Request::METHOD_GET])]
     #[OA\Get(
         summary: 'Get all users',
         tags: ['Users'],
@@ -85,7 +85,7 @@ class UserController extends AbstractController
         return  $this->json(['data' => $data], Response::HTTP_OK);
     }
 
-    #[Route('/user', name: 'create_user', methods: [Request::METHOD_POST])]
+    #[Route('/', name: 'create_user', methods: [Request::METHOD_POST])]
     #[OA\Post(
         summary: 'Create new user',
         requestBody: new OA\RequestBody(

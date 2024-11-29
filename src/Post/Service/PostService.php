@@ -9,15 +9,14 @@ use App\Post\Repository\PostRepository;
 use App\Post\Request\UpdatePostRequestDTO;
 use App\Post\Response\PostDetailResponse;
 use App\User\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Monolog\DateTimeImmutable;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
-class PostService
+readonly class PostService
 {
     public function __construct(
         private UserRepository $userRepository,
         private PostRepository $postRepository,
-        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -29,6 +28,9 @@ class PostService
         return $this->postRepository->findAllPosts();
     }
 
+    /**
+     * @return array<string,DateTimeImmutable|int|null>
+     */
     public function createPost(string $content, string $title, int $authorId): array
     {
         $author = $this->userRepository->find($authorId);
@@ -66,11 +68,6 @@ class PostService
         $this->postRepository->save();
 
         return $post;
-    }
-
-    public function findPostById(int $id): ?Post
-    {
-        return $this->postRepository->findPostById($id);
     }
 
     private function createMappedToDetailPosts(Post $post): PostDetailResponse

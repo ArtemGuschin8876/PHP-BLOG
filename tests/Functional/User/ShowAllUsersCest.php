@@ -27,7 +27,7 @@ class ShowAllUsersCest
 
     public function showAllUsersSuccessfully(FunctionalTester $I): void
     {
-        $I->sendGet('/api/users/user');
+        $I->sendGet('/api/users/');
         $I->seeResponseCodeIs(200);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson([

@@ -33,10 +33,13 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author')]
         private Collection $posts = new ArrayCollection(),
         #[ORM\Column(type: 'datetime_immutable')]
-        private \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
+        private readonly \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
     ) {
     }
 
+    /**
+     * @return string[]
+     */
     public function toArray(): array
     {
         return [
@@ -103,7 +106,9 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     {
         $this->password = $hashedPassword;
     }
-
+    /**
+     * @param string[] $roles
+     */
     public function setRoles(array $roles): void
     {
         $this->roles = $roles;

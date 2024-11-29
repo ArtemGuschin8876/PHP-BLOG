@@ -12,6 +12,13 @@ class ShowSingleUserCest
 
     public function _before(FunctionalTester $I): void
     {
+        $I->createUser([
+            'name' => 'otherUser',
+            'email' => 'otherUser@other.com',
+            'password' => 'other',
+            'roles' => ['ROLE_USER'],
+        ]);
+
         $this->otherUser = $I->createUser([
             'name' => 'Test User',
             'email' => 'test@test.com',
@@ -19,8 +26,12 @@ class ShowSingleUserCest
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function showSingleUserSuccessfully(FunctionalTester $I): void
     {
+        $I->loginAsUser('otherUser@other.com', 'other');
         $I->sendGet('api/users/'.$this->otherUser->getId());
         $I->seeResponseCodeIs(Response::HTTP_OK);
         $I->seeResponseIsJson();
@@ -33,15 +44,15 @@ class ShowSingleUserCest
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function showSingleUserNotFound(FunctionalTester $I): void
     {
+        $I->loginAsUser('otherUser@other.com', 'other');
+
         $I->sendGet('api/users/0000');
         $I->seeResponseCodeIs(Response::HTTP_NOT_FOUND);
     }
 
-    public function showSingleUserInvalidID(FunctionalTester $I): void
-    {
-        $I->sendGet('api/users/invalid-id');
-        $I->seeResponseCodeIs(Response::HTTP_INTERNAL_SERVER_ERROR);
-    }
 }

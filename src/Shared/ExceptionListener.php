@@ -10,12 +10,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
+use Symfony\Component\Validator\Exception\InvalidArgumentException;
 
 final class ExceptionListener
 {
     private const EXCEPTION_MAPPING = [
         EntityNotFoundException::class => Response::HTTP_NOT_FOUND,
-        \InvalidArgumentException::class => Response::HTTP_BAD_REQUEST,
+        InvalidArgumentException::class => Response::HTTP_BAD_REQUEST,
         HttpExceptionInterface::class => null,
     ];
 

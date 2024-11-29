@@ -8,9 +8,10 @@ use App\User\Entity\User;
 use App\User\Repository\UserRepository;
 use App\User\Request\UpdateUserRequestDTO;
 use App\User\Response\UserDetailResponse;
+use Monolog\DateTimeImmutable;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserService
+readonly class UserService
 {
     public function __construct(
         private UserRepository $userRepository,
@@ -25,7 +26,6 @@ class UserService
     {
         return $this->userRepository->findAllUsers();
     }
-
 
 
     public function createUser(string $name, string $email, string $password): array
@@ -79,6 +79,11 @@ class UserService
         return $this->createMappedToDetailUser($user);
     }
 
+    /**
+     * @param User[] $users
+     *
+     * @return UserDetailResponse[]
+     */
     public function getUserDetailResponses(array $users): array
     {
         return array_map(fn (User $user) => $this->createMappedToDetailUser($user), $users);
