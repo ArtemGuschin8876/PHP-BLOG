@@ -9,7 +9,7 @@ use App\Post\Repository\PostRepository;
 use App\Post\Request\UpdatePostRequestDTO;
 use App\Post\Response\PostDetailResponse;
 use App\User\Repository\UserRepository;
-use Monolog\DateTimeImmutable;
+use DateTimeImmutable;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 readonly class PostService
@@ -29,7 +29,7 @@ readonly class PostService
     }
 
     /**
-     * @return array<string,DateTimeImmutable|int|null>
+     * @return array<string, DateTimeImmutable|int|null>
      */
     public function createPost(string $content, string $title, int $authorId): array
     {
@@ -86,6 +86,10 @@ readonly class PostService
         return $this->createMappedToDetailPosts($post);
     }
 
+    /**
+     * @return PostDetailResponse[]
+     * @param Post[] $posts
+     */
     public function getPostDetailResponses(array $posts): array
     {
         return array_map(fn (Post $post) => $this->createMappedToDetailPosts($post), $posts);

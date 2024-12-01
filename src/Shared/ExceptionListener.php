@@ -11,10 +11,11 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
+use Throwable;
 
 final class ExceptionListener
 {
-    private const EXCEPTION_MAPPING = [
+    private const array EXCEPTION_MAPPING = [
         EntityNotFoundException::class => Response::HTTP_NOT_FOUND,
         InvalidArgumentException::class => Response::HTTP_BAD_REQUEST,
         HttpExceptionInterface::class => null,
@@ -41,7 +42,6 @@ final class ExceptionListener
                 ],
             ], $statusCode);
 
-            $event->setResponse($response);
         } else {
             $response = new JsonResponse([
                 'error' => [
@@ -50,8 +50,8 @@ final class ExceptionListener
                 ],
             ], $statusCode);
 
-            $event->setResponse($response);
         }
+        $event->setResponse($response);
     }
 
     private function handleValidationException(ExceptionEvent $event, ValidationFailedException $validationException): void
@@ -74,15 +74,15 @@ final class ExceptionListener
         $event->setResponse($response);
     }
 
-    private function getStatusCodeForException(\Throwable $exception): int
+    private function getStatusCodeForException(Throwable $exception): int
     {
         foreach (self::EXCEPTION_MAPPING as $exceptionClass => $defaultStatusCode) {
             if ($exception instanceof $exceptionClass) {
-                if ($exception instanceof HttpExceptionInterface && null === $defaultStatusCode) {
+                if ($exception instanceof HttpExceptionInterface) {
                     return $exception->getStatusCode();
                 }
 
-                return $defaultStatusCode;
+                return (int)$defaultStatusCode;
             }
         }
 

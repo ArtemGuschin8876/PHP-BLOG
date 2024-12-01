@@ -9,6 +9,7 @@ use App\User\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use DateTimeImmutable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -28,12 +29,14 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         private string $email,
         #[ORM\Column(type: 'string')]
         private string $password,
+        /** @var string[] */
         #[ORM\Column(type: 'json')]
         private array $roles = [],
+        /** @var Collection<int, Post> */
         #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author')]
-        private Collection $posts = new ArrayCollection(),
+        private readonly Collection $posts = new ArrayCollection(),
         #[ORM\Column(type: 'datetime_immutable')]
-        private readonly \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
+        private readonly DateTimeImmutable $createdAt = new DateTimeImmutable(),
     ) {
     }
 
@@ -82,7 +85,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->password;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -106,6 +109,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
     {
         $this->password = $hashedPassword;
     }
+
     /**
      * @param string[] $roles
      */

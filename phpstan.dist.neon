@@ -3,3 +3,6 @@ parameters:
     paths:
         - src
 
+    ignoreErrors:
+        - '#Property .*::\$id is never written, only read#'
+        - '#Property App\\User\\Entity\\User::\$posts is never read, only written.#'

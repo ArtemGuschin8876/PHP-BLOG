@@ -8,7 +8,7 @@ use App\User\Entity\User;
 use App\User\Repository\UserRepository;
 use App\User\Request\UpdateUserRequestDTO;
 use App\User\Response\UserDetailResponse;
-use Monolog\DateTimeImmutable;
+use DateTimeImmutable;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class UserService
@@ -27,7 +27,9 @@ readonly class UserService
         return $this->userRepository->findAllUsers();
     }
 
-
+    /**
+     * @return array<string,int|DateTimeImmutable>
+     */
     public function createUser(string $name, string $email, string $password): array
     {
         $user = new User(
