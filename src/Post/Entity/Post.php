@@ -19,15 +19,19 @@ class Post
 
     public function __construct(
         #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
-        private User $author,
+        private readonly User $author,
         #[ORM\Column(length: 255)]
         private ?string $title = null,
         #[ORM\Column(type: 'text')]
         private ?string $content = null,
         #[ORM\Column(type: 'datetime_immutable')]
-        private \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
+        private readonly \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
     ) {
     }
+
+    /**
+     * @return array<string, string|null>
+     */
 
     public function toArray(): array
     {
@@ -75,5 +79,4 @@ class Post
     {
         return $this->author;
     }
-
 }
