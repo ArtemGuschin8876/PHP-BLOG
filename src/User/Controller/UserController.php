@@ -6,11 +6,9 @@ namespace App\User\Controller;
 
 use App\User\Entity\User;
 use App\User\Request\CreateUserRequestDTO;
-use App\User\Request\UpdateUserRequestDTO;
 use App\User\Response\UserCreateResponse;
 use App\User\Response\UserDetailResponse;
 use App\User\Response\UserGetResponse;
-use App\User\Response\UserUpdateResponse;
 use App\User\Service\UserService;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,9 +46,9 @@ class UserController extends AbstractController
     {
         $users = $this->userService->getAllUsers();
 
-        $data = $this->userService->getUserDetailResponses($users);
+        $result = $this->userService->getUserDetailResponses($users);
 
-        return $this->json($data, Response::HTTP_OK);
+        return $this->json(['data' => $result], Response::HTTP_OK);
 
     }
 
@@ -80,9 +78,9 @@ class UserController extends AbstractController
     public function showUser(User $user): JsonResponse
     {
 
-        $data = $this->userService->getUserDetailResponse($user);
+        $result = $this->userService->getUserDetailResponse($user);
 
-        return  $this->json(['data' => $data], Response::HTTP_OK);
+        return  $this->json(['data' => $result], Response::HTTP_OK);
     }
 
     #[Route('/', name: 'create_user', methods: [Request::METHOD_POST])]
@@ -130,55 +128,6 @@ class UserController extends AbstractController
         );
 
         return  $this->json(['data' => $result], Response::HTTP_CREATED);
-    }
-
-    #[Route('/{id}', name: 'update_user', methods: [Request::METHOD_PUT])]
-    #[OA\Put(
-        summary: 'Update user',
-        requestBody: new OA\RequestBody(
-            content: new OA\JsonContent(ref: new Model(type: UpdateUserRequestDTO::class)),
-        ),
-        tags: ['Users'],
-        responses: [
-            new OA\Response(
-                response: Response::HTTP_OK,
-                description: 'Successful response',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(
-                            property: 'data',
-                            ref: new Model(type: UserUpdateResponse::class),
-                        ),
-                    ],
-                ),
-            ),
-
-            new OA\Response(
-                response: Response::HTTP_BAD_REQUEST,
-                description: 'Validation errors',
-            ),
-            new OA\Response(
-                response: Response::HTTP_UNAUTHORIZED,
-                description: 'Unauthorized',
-            ),
-            new OA\Response(
-                response: Response::HTTP_FORBIDDEN,
-                description: 'Forbidden'
-            ),
-            new OA\Response(
-                response: Response::HTTP_NOT_FOUND,
-                description: 'User not found',
-            ),
-        ],
-    )]
-    public function updateUser(
-        #[MapRequestPayload] UpdateUserRequestDTO $updateUserDTO,
-        User $user,
-    ): JsonResponse {
-
-        $data = $this->userService->updateUser($user, $updateUserDTO);
-
-        return  $this->json(['data' => $data->toArray()], Response::HTTP_OK);
     }
 
     #[Route('/{id}', name: 'delete_user', methods: [Request::METHOD_DELETE])]

@@ -28,7 +28,10 @@ readonly class UserService
     }
 
     /**
-     * @return array<string,int|DateTimeImmutable>
+     * @return array{
+     *     id:int,
+     *     createdAt:DateTimeImmutable
+     * }
      */
     public function createUser(string $name, string $email, string $password): array
     {
@@ -49,17 +52,6 @@ readonly class UserService
             'id' => $user->getId(),
             'createdAt' => $user->getCreatedAt(),
         ];
-    }
-
-    public function updateUser(User $user, UpdateUserRequestDTO $updateUserDTO): User
-    {
-
-        $user->setName($updateUserDTO->getName())
-        ->setEmail($updateUserDTO->getEmail());
-
-        $this->userRepository->save();
-
-        return $user;
     }
 
     public function deleteUser(User $user): void

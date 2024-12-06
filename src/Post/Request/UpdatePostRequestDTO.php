@@ -17,7 +17,10 @@ class UpdatePostRequestDTO
     }
 
     /**
-     * @return string[]
+     * @return array{
+     *    title:string,
+     *    content:string
+     * }
      */
     public function toArray(): array
     {

@@ -34,14 +34,17 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         private array $roles = [],
         /** @var Collection<int, Post> */
         #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author')]
-        private readonly Collection $posts = new ArrayCollection(),
+        private Collection $posts = new ArrayCollection(),
         #[ORM\Column(type: 'datetime_immutable')]
         private readonly DateTimeImmutable $createdAt = new DateTimeImmutable(),
     ) {
     }
 
     /**
-     * @return string[]
+     * @return array{
+     *     name:string,
+     *     email:string
+     * }
      */
     public function toArray(): array
     {
@@ -95,14 +98,6 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         $this->name = $name;
 
         return $this;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-
     }
 
     public function setPassword(string $hashedPassword): void

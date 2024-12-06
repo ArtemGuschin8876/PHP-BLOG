@@ -7,6 +7,8 @@ namespace App\Tests\Functional\User;
 use App\Tests\Support\FunctionalTester;
 use App\User\Entity\User;
 use Codeception\Util\HttpCode;
+use DateTimeImmutable;
+use Exception;
 
 class CreateUserCest
 {
@@ -14,6 +16,9 @@ class CreateUserCest
     {
     }
 
+    /**
+     * @throws Exception
+     */
     public function createUserSuccessfully(FunctionalTester $I): void
     {
         $I->haveHttpHeader('Content-Type', 'application/json');
@@ -26,23 +31,16 @@ class CreateUserCest
         $I->seeResponseCodeIs(HttpCode::CREATED);
         $I->seeResponseIsJson();
 
-        $response = json_decode($I->grabResponse(), true);
-
-        $userID = $response['data']['id'];
-        $userCreatedAt = $response['data']['createdAt'];
-
-        $I->assertGreaterThan(0, $userCreatedAt);
-
-        $I->assertNotFalse(
-            \DateTime::createFromFormat(DATE_ATOM, $userCreatedAt),
-            'The "createdAt" field is not a valid ISO 8601 datetime string.'
-        );
+        $I->seeResponseMatchesJsonType([
+            'id' => 'integer',
+            'createdAt' => 'string:date',
+        ], '$.data');
 
         $I->seeInRepository(
             User::class,
             [
-                'id' => $userID,
-                'createdAt' => $userCreatedAt,
+                'id' => $I->grabDataFromResponseByJsonPath('data.id')[0],
+                'createdAt' => new DateTimeImmutable($I->grabDataFromResponseByJsonPath('data.createdAt')[0]),
             ]
         );
     }
@@ -57,6 +55,16 @@ class CreateUserCest
         $I->seeResponseCodeIs(HttpCode::UNPROCESSABLE_ENTITY);
         $I->seeResponseIsJson();
 
+        $I->seeResponseMatchesJsonType([
+            'errors' => [
+                [
+                    'code' => 'integer',
+                    'field' => 'string',
+                    'message' => 'string',
+                ],
+            ],
+        ], '$');
+
         $expectedErrors = [
             [
                 'code' => 422,
@@ -70,14 +78,6 @@ class CreateUserCest
             ],
         ];
 
-        $response = json_decode($I->grabResponse(), true);
-
-        $I->assertArrayHasKey('errors', $response);
-
-        $I->assertSame(
-            $expectedErrors,
-            $response['errors'],
-            'The errors in the response do not match the expected errors.'
-        );
+        $I->seeResponseContainsJson(['errors' => $expectedErrors]);
     }
 }

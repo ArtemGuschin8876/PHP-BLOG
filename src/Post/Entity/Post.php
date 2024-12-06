@@ -7,9 +7,11 @@ namespace App\Post\Entity;
 use App\Post\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
 use App\User\Entity\User;
+use DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
-#[ORM\Table(name: 'posts')]
+#[ORM\Table(name: 'posts', indexes: [new ORM\Index(name: 'title_index', columns: ['title'])])]
+
 class Post
 {
     #[ORM\Id]
@@ -21,18 +23,20 @@ class Post
         #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
         private readonly User $author,
         #[ORM\Column(length: 255)]
-        private ?string $title = null,
+        private string $title,
         #[ORM\Column(type: 'text')]
-        private ?string $content = null,
+        private string $content,
         #[ORM\Column(type: 'datetime_immutable')]
-        private readonly \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
+        private readonly DateTimeImmutable $createdAt = new DateTimeImmutable(),
     ) {
     }
 
     /**
-     * @return array<string, string|null>
+     * @return array{
+     *  title:string,
+     *  content:string
+     *  }
      */
-
     public function toArray(): array
     {
         return [
@@ -41,12 +45,12 @@ class Post
         ];
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -58,7 +62,7 @@ class Post
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -70,7 +74,7 @@ class Post
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }

@@ -1,10 +1,13 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Tests\Functional\User;
 
 use App\Tests\Support\FunctionalTester;
 use App\User\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
+use Exception;
 
 class ShowSingleUserCest
 {
@@ -27,7 +30,7 @@ class ShowSingleUserCest
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function showSingleUserSuccessfully(FunctionalTester $I): void
     {
@@ -45,7 +48,7 @@ class ShowSingleUserCest
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function showSingleUserNotFound(FunctionalTester $I): void
     {
@@ -54,5 +57,4 @@ class ShowSingleUserCest
         $I->sendGet('api/users/0000');
         $I->seeResponseCodeIs(Response::HTTP_NOT_FOUND);
     }
-
 }

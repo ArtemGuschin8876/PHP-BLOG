@@ -9,8 +9,8 @@ use App\Post\Repository\PostRepository;
 use App\Post\Request\UpdatePostRequestDTO;
 use App\Post\Response\PostDetailResponse;
 use App\User\Repository\UserRepository;
-use DateTimeImmutable;
 use Symfony\Component\Config\Definition\Exception\Exception;
+use DateTimeImmutable;
 
 readonly class PostService
 {
@@ -29,7 +29,10 @@ readonly class PostService
     }
 
     /**
-     * @return array<string, DateTimeImmutable|int|null>
+     * @return array{
+     *     id:int,
+     *     createdAt:DateTimeImmutable
+     * }
      */
     public function createPost(string $content, string $title, int $authorId): array
     {
@@ -87,8 +90,9 @@ readonly class PostService
     }
 
     /**
-     * @return PostDetailResponse[]
      * @param Post[] $posts
+     *
+     * @return PostDetailResponse[]
      */
     public function getPostDetailResponses(array $posts): array
     {

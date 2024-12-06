@@ -25,7 +25,7 @@ use OpenApi\Attributes as OA;
 class PostController extends AbstractController
 {
     public function __construct(
-        private PostService $postService,
+        private readonly PostService $postService,
     ) {
     }
 
@@ -53,9 +53,9 @@ class PostController extends AbstractController
     {
         $posts = $this->postService->getAllPosts();
 
-        $data = $this->postService->getPostDetailResponses($posts);
+        $result = $this->postService->getPostDetailResponses($posts);
 
-        return $this->json($data);
+        return $this->json(['data' => $result]);
     }
 
     #[Route('/{id}', name: 'post_show', methods: [Request::METHOD_GET])]
@@ -84,9 +84,9 @@ class PostController extends AbstractController
     )]
     public function showPost(Post $post): JsonResponse
     {
-        $data = $this->postService->getPostDetailResponse($post);
+        $result = $this->postService->getPostDetailResponse($post);
 
-        return $this->json([$data], Response::HTTP_OK);
+        return $this->json(['data' => $result->toArray()], Response::HTTP_OK);
     }
 
     #[Route('/', name: 'post_create', methods: [Request::METHOD_POST])]
@@ -184,6 +184,10 @@ class PostController extends AbstractController
             new OA\Response(
                 response: Response::HTTP_NOT_FOUND,
                 description: 'Post not found',
+            ),
+            new OA\Response(
+                response: Response::HTTP_FORBIDDEN,
+                description: 'Forbidden'
             ),
         ],
     )]
