@@ -37,11 +37,6 @@ class PostRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-    public function findPostById(int $id): ?Post
-    {
-        return $this->find($id);
-    }
-
     public function delete(Post $post): void
     {
         $this->getEntityManager()->remove($post);

@@ -1,0 +1,21 @@
+actor: FunctionalTester
+suite_namespace: App\Tests\Functional
+modules:
+    enabled:
+        - Symfony:
+              app_path: 'src'
+              environment: 'test'
+        - Doctrine:
+              depends: Symfony
+              cleanup: true
+              reconstruct: true
+              migrations: true
+              migration_paths:
+                  - 'src/migrations'
+        - REST:
+              depends: Symfony
+              url: http://localhost
+        - Asserts
+        - \App\Tests\Support\Helper\FunctionalHelper
+    #    step_decorators: ~
+    helper_namespace: App\Tests\Support\Helper

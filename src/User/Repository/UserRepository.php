@@ -26,11 +26,6 @@ class UserRepository extends ServiceEntityRepository
         return $this->findAll();
     }
 
-    public function findUserById(int $id): ?User
-    {
-        return $this->find($id);
-    }
-
     public function findUserByEmail(string $email): ?User
     {
         return $this->findOneBy(['email' => $email]);
@@ -46,8 +41,6 @@ class UserRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
-
-
 
     public function delete(User $user): void
     {

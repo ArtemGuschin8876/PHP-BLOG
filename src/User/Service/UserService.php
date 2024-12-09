@@ -8,9 +8,10 @@ use App\User\Entity\User;
 use App\User\Repository\UserRepository;
 use App\User\Request\UpdateUserRequestDTO;
 use App\User\Response\UserDetailResponse;
+use DateTimeImmutable;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserService
+readonly class UserService
 {
     public function __construct(
         private UserRepository $userRepository,
@@ -26,11 +27,12 @@ class UserService
         return $this->userRepository->findAllUsers();
     }
 
-    public function getUserByID(int $id): ?User
-    {
-        return $this->userRepository->findUserById($id);
-    }
-
+    /**
+     * @return array{
+     *     id:int,
+     *     createdAt:DateTimeImmutable
+     * }
+     */
     public function createUser(string $name, string $email, string $password): array
     {
         $user = new User(
@@ -39,7 +41,7 @@ class UserService
             $password,
         );
 
-        $user->setRoles(['ROLE_USER', 'ROLE_USER_ADMIN']);
+        $user->setRoles(['ROLE_USER']);
 
         $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
@@ -50,17 +52,6 @@ class UserService
             'id' => $user->getId(),
             'createdAt' => $user->getCreatedAt(),
         ];
-    }
-
-    public function updateUser(User $user, UpdateUserRequestDTO $updateUserDTO): User
-    {
-
-        $user->setName($updateUserDTO->getName())
-        ->setEmail($updateUserDTO->getEmail());
-
-        $this->userRepository->save();
-
-        return $user;
     }
 
     public function deleteUser(User $user): void
@@ -82,6 +73,11 @@ class UserService
         return $this->createMappedToDetailUser($user);
     }
 
+    /**
+     * @param User[] $users
+     *
+     * @return UserDetailResponse[]
+     */
     public function getUserDetailResponses(array $users): array
     {
         return array_map(fn (User $user) => $this->createMappedToDetailUser($user), $users);
