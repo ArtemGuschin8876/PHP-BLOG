@@ -8,7 +8,9 @@ use App\Post\Entity\Post;
 use App\Post\Repository\PostRepository;
 use App\Post\Request\UpdatePostRequestDTO;
 use App\Post\Response\PostDetailResponse;
+use App\User\Entity\User;
 use App\User\Repository\UserRepository;
+use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use DateTimeImmutable;
 
@@ -38,7 +40,7 @@ readonly class PostService
     {
         $author = $this->userRepository->find($authorId);
 
-        if (!$author) {
+        if ($author === null) {
             throw new Exception('Author not found');
         }
 
@@ -62,8 +64,12 @@ readonly class PostService
         $this->postRepository->delete($post);
     }
 
-    public function updatePost(Post $post, UpdatePostRequestDTO $updatePostDTO): Post
+    public function updatePost(Post $post, User $user, UpdatePostRequestDTO $updatePostDTO): Post
     {
+
+        if ($user->getId() !== $post->getAuthor()->getId()) {
+            throw new EntityNotFoundException('Post belongs to user not found');
+        }
 
         $post->setTitle($updatePostDTO->getTitle())
             ->setContent($updatePostDTO->getContent());

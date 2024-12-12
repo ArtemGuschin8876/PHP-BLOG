@@ -28,7 +28,7 @@ class UniqueEmailValidator extends ConstraintValidator
             throw new UnexpectedValueException($value, 'string');
         }
 
-        if (null !== $this->userRepository->findUserByEmail($value)) {
+        if ($this->userRepository->findUserByEmail($value) instanceof \App\User\Entity\User) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

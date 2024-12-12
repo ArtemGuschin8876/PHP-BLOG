@@ -20,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 use OpenApi\Attributes as OA;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api/posts')]
 class PostController extends AbstractController
@@ -43,10 +44,9 @@ class PostController extends AbstractController
                 ),
             ),
             new OA\Response(
-                response: Response::HTTP_BAD_REQUEST,
+                response: Response::HTTP_NOT_FOUND,
                 description: 'Bad request',
             ),
-
         ],
     )]
     public function list(): JsonResponse
@@ -164,9 +164,10 @@ class PostController extends AbstractController
     public function updatePostByID(
         #[MapRequestPayload] UpdatePostRequestDTO $updatePostDTO,
         Post $post,
+        #[CurrentUser] $currentUser,
     ): JsonResponse {
 
-        $result = $this->postService->updatePost($post, $updatePostDTO);
+        $result = $this->postService->updatePost($post, $currentUser, $updatePostDTO);
 
         return $this->json(['data' => $result->toArray()], Response::HTTP_OK);
     }

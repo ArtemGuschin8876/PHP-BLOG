@@ -11,7 +11,6 @@
         "ext-iconv": "*",
         "codeception/module-asserts": "*",
         "codeception/module-doctrine": "^3.1",
-        "codeception/module-phpbrowser": "*",
         "doctrine/dbal": "^4.2",
         "doctrine/doctrine-bundle": "^2.13",
         "doctrine/doctrine-migrations-bundle": "^3.3",
