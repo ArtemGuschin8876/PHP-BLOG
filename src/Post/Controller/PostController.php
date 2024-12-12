@@ -26,7 +26,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class PostController extends AbstractController
 {
     public function __construct(
-        private readonly PostService $postService,
+        private PostService $postService,
     ) {
     }
 

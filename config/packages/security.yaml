@@ -24,8 +24,8 @@ security:
     access_control:
         - { path: ^/api/login_check, roles: PUBLIC_ACCESS }
 
-        - { path: ^/api/users/\d+$, roles: ROLE_USER, methods: [GET] }
         - { path: ^/api/users$, roles: PUBLIC_ACCESS, methods: [GET, POST] }
+        - { path: ^/api/users/\d+$, roles: ROLE_USER, methods: [GET] }
         - { path: ^/api/users/\d+$, roles: ROLE_ADMINISTRATOR, methods: [DELETE] }
 
         - { path: ^api/posts/\d+$, roles: ROLE_USER, methods: [PUT, DELETE] }

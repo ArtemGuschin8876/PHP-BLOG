@@ -2,6 +2,7 @@
 
 namespace App\User\Validator;
 
+use App\User\Entity\User;
 use App\User\Repository\UserRepository;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -28,7 +29,7 @@ class UniqueEmailValidator extends ConstraintValidator
             throw new UnexpectedValueException($value, 'string');
         }
 
-        if ($this->userRepository->findUserByEmail($value) instanceof \App\User\Entity\User) {
+        if ($this->userRepository->findUserByEmail($value) instanceof User) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
                 ->addViolation();

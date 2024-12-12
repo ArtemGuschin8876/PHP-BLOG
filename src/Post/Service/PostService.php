@@ -14,7 +14,7 @@ use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use DateTimeImmutable;
 
-readonly class PostService
+class PostService
 {
     public function __construct(
         private UserRepository $userRepository,
@@ -40,8 +40,8 @@ readonly class PostService
     {
         $author = $this->userRepository->find($authorId);
 
-        if ($author === null) {
-            throw new Exception('Author not found');
+        if (null === $author) {
+            throw new EntityNotFoundException('Author not found');
         }
 
         $post = new Post(
