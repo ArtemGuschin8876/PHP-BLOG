@@ -12,6 +12,7 @@ use App\Post\Response\PostDetailResponse;
 use App\Post\Response\PostGetResponse;
 use App\Post\Response\PostUpdateResponse;
 use App\Post\Service\PostService;
+use App\User\Entity\User;
 use Nelmio\ApiDocBundle\Attribute\Model;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -164,7 +165,7 @@ class PostController extends AbstractController
     public function updatePostByID(
         #[MapRequestPayload] UpdatePostRequestDTO $updatePostDTO,
         Post $post,
-        #[CurrentUser] $currentUser,
+        #[CurrentUser] User $currentUser,
     ): JsonResponse {
 
         $result = $this->postService->updatePost($post, $currentUser, $updatePostDTO);
