@@ -6,12 +6,11 @@ namespace App\User\Service;
 
 use App\User\Entity\User;
 use App\User\Repository\UserRepository;
-use App\User\Request\UpdateUserRequestDTO;
 use App\User\Response\UserDetailResponse;
 use DateTimeImmutable;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-readonly class UserService
+final readonly class UserService
 {
     public function __construct(
         private UserRepository $userRepository,

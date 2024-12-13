@@ -30,10 +30,10 @@ nelmio_api_doc:
                   properties:
                     email:
                       type: string
-                      example: 'CAT@gmail.com'
+                      example: 'ADMIN@gmail.com'
                     password:
                       type: string
-                      example: 'CAT'
+                      example: 'ADMIN'
           responses:
             '200':
               description: Authentication successful

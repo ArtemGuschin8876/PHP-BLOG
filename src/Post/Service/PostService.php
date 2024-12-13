@@ -11,10 +11,9 @@ use App\Post\Response\PostDetailResponse;
 use App\User\Entity\User;
 use App\User\Repository\UserRepository;
 use Doctrine\ORM\EntityNotFoundException;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use DateTimeImmutable;
 
-class PostService
+final readonly class PostService
 {
     public function __construct(
         private UserRepository $userRepository,
