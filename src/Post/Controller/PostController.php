@@ -14,13 +14,13 @@ use App\Post\Response\PostUpdateResponse;
 use App\Post\Service\PostService;
 use App\User\Entity\User;
 use Nelmio\ApiDocBundle\Attribute\Model;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
-use OpenApi\Attributes as OA;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/api/posts')]
@@ -114,13 +114,12 @@ class PostController extends AbstractController
                 response: Response::HTTP_BAD_REQUEST,
                 description: 'Validation errors',
             ),
-
         ]
     )]
     public function createPost(
-        #[MapRequestPayload] CreatePostRequestDTO $createPostDTO,
+        #[MapRequestPayload]
+        CreatePostRequestDTO $createPostDTO,
     ): JsonResponse {
-
         $result = $this->postService->createPost(
             $createPostDTO->title,
             $createPostDTO->content,
@@ -128,7 +127,6 @@ class PostController extends AbstractController
         );
 
         return $this->json(['data' => $result], Response::HTTP_CREATED);
-
     }
 
     #[Route('/{id}', name: 'post_update', methods: [Request::METHOD_PUT])]
@@ -163,11 +161,12 @@ class PostController extends AbstractController
         ],
     )]
     public function updatePostByID(
-        #[MapRequestPayload] UpdatePostRequestDTO $updatePostDTO,
+        #[MapRequestPayload]
+        UpdatePostRequestDTO $updatePostDTO,
         Post $post,
-        #[CurrentUser] User $currentUser,
+        #[CurrentUser]
+        User $currentUser,
     ): JsonResponse {
-
         $result = $this->postService->updatePost($post, $currentUser, $updatePostDTO);
 
         return $this->json(['data' => $result->toArray()], Response::HTTP_OK);

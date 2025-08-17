@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Post\Request;
 
-use Symfony\Component\Validator\Constraints as Assert;
 use App\Post\Validator as PostAssert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class CreatePostRequestDTO
 {

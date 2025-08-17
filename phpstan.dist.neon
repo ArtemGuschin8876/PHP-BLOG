@@ -2,7 +2,21 @@ parameters:
     level: max
     paths:
         - src
+        - config
+        - migrations
+        - bin
+
+    bootstrapFiles:
+        - vendor/autoload.php
+
+    scanDirectories:
+        - tests/Support/_generated
 
     ignoreErrors:
         - '#Property .*::\$id is never written, only read#'
         - '#Property App\\User\\Entity\\User::\$posts is never read, only written.#'
+
+    excludePaths:
+        - tests/Support/_generated/*
+        - tests/_output/*
+        - vendor/*

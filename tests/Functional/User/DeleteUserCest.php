@@ -5,7 +5,6 @@ namespace App\Tests\Functional\User;
 use App\Tests\Support\FunctionalTester;
 use App\User\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
-use Exception;
 
 class DeleteUserCest
 {
@@ -27,7 +26,6 @@ class DeleteUserCest
             'roles' => ['ROLE_USER'],
         ]);
 
-
         $this->targetUser = $I->createUser([
             'name' => 'userToDelete',
             'email' => 'userToDelete@email.com',
@@ -36,7 +34,7 @@ class DeleteUserCest
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function deleteUserSuccessfullyByAdmin(FunctionalTester $I): void
     {
@@ -52,7 +50,7 @@ class DeleteUserCest
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function deleteUserForbiddenForDifferentUser(FunctionalTester $I): void
     {
@@ -68,7 +66,7 @@ class DeleteUserCest
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function deleteUserNotFound(FunctionalTester $I): void
     {

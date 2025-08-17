@@ -9,7 +9,6 @@ use App\User\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeImmutable;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -36,7 +35,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         #[ORM\OneToMany(targetEntity: Post::class, mappedBy: 'author')]
         private Collection $posts = new ArrayCollection(),
         #[ORM\Column(type: 'datetime_immutable')]
-        private readonly DateTimeImmutable $createdAt = new DateTimeImmutable(),
+        private readonly \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
     ) {
     }
 
@@ -88,7 +87,7 @@ class User implements PasswordAuthenticatedUserInterface, UserInterface
         return $this->password;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }

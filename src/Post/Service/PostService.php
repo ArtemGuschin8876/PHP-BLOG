@@ -10,8 +10,8 @@ use App\Post\Request\UpdatePostRequestDTO;
 use App\Post\Response\PostDetailResponse;
 use App\User\Entity\User;
 use App\User\Repository\UserRepository;
-use Doctrine\ORM\EntityNotFoundException;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityNotFoundException;
 
 final readonly class PostService
 {
@@ -49,7 +49,6 @@ final readonly class PostService
             $content,
         );
 
-
         $this->postRepository->create($post);
 
         return [
@@ -65,7 +64,6 @@ final readonly class PostService
 
     public function updatePost(Post $post, User $user, UpdatePostRequestDTO $updatePostDTO): Post
     {
-
         if ($user->getId() !== $post->getAuthor()->getId()) {
             throw new EntityNotFoundException('Post belongs to user not found');
         }
@@ -80,7 +78,7 @@ final readonly class PostService
 
     private function createMappedToDetailPosts(Post $post): PostDetailResponse
     {
-        return  new PostDetailResponse(
+        return new PostDetailResponse(
             id: $post->getId(),
             title: $post->getTitle(),
             content: $post->getContent(),

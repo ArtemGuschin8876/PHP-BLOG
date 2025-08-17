@@ -34,6 +34,16 @@ class FunctionalHelper extends Module
         $rest->haveHttpHeader('Authorization', "Bearer {$token}");
     }
 
+    /**
+     * @param array{
+     *   name: non-empty-string,
+     *   email: non-empty-string,
+     *   password: non-empty-string,
+     *   roles?: list<non-empty-string>
+     * } $data
+     *
+     * @throws ModuleException
+     */
     public function createUser(array $data): User
     {
         /** @var Symfony $symfony */

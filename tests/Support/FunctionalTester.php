@@ -6,7 +6,6 @@ namespace App\Tests\Support;
 
 use App\User\Entity\User;
 
-
 /**
  * Inherited Methods.
  *

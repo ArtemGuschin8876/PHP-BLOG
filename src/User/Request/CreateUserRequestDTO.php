@@ -20,5 +20,4 @@ class CreateUserRequestDTO
         public string $password,
     ) {
     }
-
 }

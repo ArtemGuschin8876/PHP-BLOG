@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Post\Response;
+
 class PostDetailResponse
 {
     public function __construct(

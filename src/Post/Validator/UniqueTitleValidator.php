@@ -28,7 +28,6 @@ class UniqueTitleValidator extends ConstraintValidator
             throw new UnexpectedValueException($value, 'string');
         }
 
-
         if (null !== $this->postRepository->findOneBy(['title' => $value])) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)

@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Post\Entity;
 
 use App\Post\Repository\PostRepository;
-use Doctrine\ORM\Mapping as ORM;
 use App\User\Entity\User;
-use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ORM\Table(name: 'posts', indexes: [new ORM\Index(name: 'title_index', columns: ['title'])])]
-
 class Post
 {
     #[ORM\Id]
@@ -27,7 +25,7 @@ class Post
         #[ORM\Column(type: 'text')]
         private string $content,
         #[ORM\Column(type: 'datetime_immutable')]
-        private readonly DateTimeImmutable $createdAt = new DateTimeImmutable(),
+        private readonly \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
     ) {
     }
 
@@ -74,7 +72,7 @@ class Post
         return $this;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }

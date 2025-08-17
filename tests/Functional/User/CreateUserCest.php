@@ -7,8 +7,6 @@ namespace App\Tests\Functional\User;
 use App\Tests\Support\FunctionalTester;
 use App\User\Entity\User;
 use Codeception\Util\HttpCode;
-use DateTimeImmutable;
-use Exception;
 
 class CreateUserCest
 {
@@ -17,7 +15,7 @@ class CreateUserCest
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function createUserSuccessfully(FunctionalTester $I): void
     {
@@ -40,7 +38,7 @@ class CreateUserCest
             User::class,
             [
                 'id' => $I->grabDataFromResponseByJsonPath('data.id')[0],
-                'createdAt' => new DateTimeImmutable($I->grabDataFromResponseByJsonPath('data.createdAt')[0]),
+                'createdAt' => new \DateTimeImmutable($I->grabDataFromResponseByJsonPath('data.createdAt')[0]),
             ]
         );
     }

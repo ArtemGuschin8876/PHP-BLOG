@@ -11,13 +11,13 @@ use App\User\Response\UserDetailResponse;
 use App\User\Response\UserGetResponse;
 use App\User\Service\UserService;
 use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
-use OpenApi\Attributes as OA;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/users')]
 class UserController extends AbstractController
@@ -45,11 +45,9 @@ class UserController extends AbstractController
     public function list(): JsonResponse
     {
         $users = $this->userService->getAllUsers();
-
         $result = $this->userService->getUserDetailResponses($users);
 
         return $this->json(['data' => $result], Response::HTTP_OK);
-
     }
 
     #[Route('/{id}', name: 'user', methods: [Request::METHOD_GET])]
@@ -77,10 +75,9 @@ class UserController extends AbstractController
     )]
     public function showUser(User $user): JsonResponse
     {
-
         $result = $this->userService->getUserDetailResponse($user);
 
-        return  $this->json(['data' => $result], Response::HTTP_OK);
+        return $this->json(['data' => $result], Response::HTTP_OK);
     }
 
     #[Route('/', name: 'create_user', methods: [Request::METHOD_POST])]
@@ -118,16 +115,16 @@ class UserController extends AbstractController
         ],
     )]
     public function createUser(
-        #[MapRequestPayload] CreateUserRequestDTO $createUserDTO,
+        #[MapRequestPayload]
+        CreateUserRequestDTO $createUserDTO,
     ): JsonResponse {
-
         $result = $this->userService->createUser(
             $createUserDTO->name,
             $createUserDTO->email,
             $createUserDTO->password,
         );
 
-        return  $this->json(['data' => $result], Response::HTTP_CREATED);
+        return $this->json(['data' => $result], Response::HTTP_CREATED);
     }
 
     #[Route('/{id}', name: 'delete_user', methods: [Request::METHOD_DELETE])]

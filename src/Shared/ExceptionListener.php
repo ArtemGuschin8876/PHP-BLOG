@@ -9,9 +9,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Exception\InvalidArgumentException;
-use Throwable;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 final class ExceptionListener
 {
@@ -41,7 +40,6 @@ final class ExceptionListener
                     'code' => $statusCode,
                 ],
             ], $statusCode);
-
         } else {
             $response = new JsonResponse([
                 'error' => [
@@ -49,7 +47,6 @@ final class ExceptionListener
                     'code' => $statusCode,
                 ],
             ], $statusCode);
-
         }
         $event->setResponse($response);
     }
@@ -74,7 +71,7 @@ final class ExceptionListener
         $event->setResponse($response);
     }
 
-    private function getStatusCodeForException(Throwable $exception): int
+    private function getStatusCodeForException(\Throwable $exception): int
     {
         foreach (self::EXCEPTION_MAPPING as $exceptionClass => $defaultStatusCode) {
             if ($exception instanceof $exceptionClass) {
@@ -82,7 +79,7 @@ final class ExceptionListener
                     return $exception->getStatusCode();
                 }
 
-                return (int)$defaultStatusCode;
+                return (int) $defaultStatusCode;
             }
         }
 
